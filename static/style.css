@@ -1,0 +1,109 @@
+body {
+  background-color: #f4f6fb;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 0.92rem;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+/* Stat cards */
+.stat-card {
+  border-radius: 12px;
+  transition: transform 0.15s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+.stat-icon {
+  min-width: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-primary-light { background-color: #dbeafe; }
+.bg-success-light { background-color: #dcfce7; }
+.bg-warning-light { background-color: #fef9c3; }
+.bg-info-light    { background-color: #cffafe; }
+
+/* Table */
+.table th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+}
+.table td {
+  vertical-align: middle;
+}
+.table-hover tbody tr:hover {
+  background-color: #f0f4ff;
+  cursor: pointer;
+}
+
+/* Form sections */
+.form-section {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 1.25rem 1.25rem 0.75rem;
+  border: 1px solid #e9ecef;
+}
+.form-section-title {
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+/* Status badges */
+.badge-vuokrattu   { background-color: #16a34a; color: white; }
+.badge-vapaa       { background-color: #dc2626; color: white; }
+.badge-ok          { background-color: #3b82f6; color: white; }
+.badge-ongelma     { background-color: #f59e0b; color: white; }
+.badge-selvitys    { background-color: #f59e0b; color: white; }
+
+/* Drop zone */
+.border-dashed {
+  border: 2px dashed #93c5fd !important;
+  transition: background 0.2s;
+}
+.border-dashed.drag-over {
+  background: #dbeafe !important;
+}
+
+/* Card */
+.card {
+  border-radius: 12px;
+}
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-sm {
+  font-size: 0.8rem;
+}
+
+/* Modal */
+.modal-header {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .table td, .table th {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.5rem;
+  }
+}
