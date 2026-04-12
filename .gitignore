@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+venv/
+.venv/
+# Tietokanta ja Excel-data jätetään pois julkisesta repositoriosta (GDPR)
+data/*.db
+data.xlsx
