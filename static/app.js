@@ -69,7 +69,7 @@ async function doLogin() {
     errEl.classList.remove('d-none');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i>Kirjaudu sisÃ¤Ã¤n';
+    btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i>Kirjaudu sisään';
   }
 }
 
@@ -117,7 +117,7 @@ function updateNavbarUser() {
     badge.className = 'nav-role-badge nav-role-admin';
     document.getElementById('nav-kayttajat').classList.remove('d-none');
   } else {
-    badge.textContent = 'KÃ¤yttÃ¤jÃ¤';
+    badge.textContent = 'Käyttäjä';
     badge.className = 'nav-role-badge nav-role-user';
     document.getElementById('nav-kayttajat').classList.add('d-none');
   }
@@ -172,7 +172,7 @@ async function loadProperties() {
     renderTable(allProperties);
     renderDashboardTable(allProperties.slice(0, 7));
   } catch (e) {
-    showToast('Kohteiden lataus epÃ¤onnistui', 'danger');
+    showToast('Kohteiden lataus epäonnistui', 'danger');
   }
 }
 
@@ -181,24 +181,24 @@ function renderTable(props) {
   document.getElementById('result-count').textContent = `${props.length} kohdetta`;
 
   if (props.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-5 text-muted">Ei kohteita. LisÃ¤Ã¤ uusi kohde tai tuo Excel-tiedosto.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-5 text-muted">Ei kohteita. Lisää uusi kohde tai tuo Excel-tiedosto.</td></tr>';
     return;
   }
 
   tbody.innerHTML = props.map(p => `
-    <tr onclick="viewProperty(${p.id})" title="Klikkaa nÃ¤hdÃ¤ksesi tiedot">
+    <tr onclick="viewProperty(${p.id})" title="Klikkaa nähdäksesi tiedot">
       <td>
-        <div class="fw-semibold">${esc(p.kohde_osoite || 'â')}</div>
+        <div class="fw-semibold">${esc(p.kohde_osoite || '–')}</div>
         ${p.kaupunki ? `<small class="text-muted">${esc(p.kaupunki)} ${esc(p.postinumero || '')}</small>` : ''}
       </td>
-      <td>${esc(p.omistaja || 'â')}</td>
-      <td><span class="text-muted small">${esc(p.tyyppi || 'â')}</span></td>
-      <td class="text-center">${p.koko ? p.koko + ' mÂ²' : 'â'}</td>
+      <td>${esc(p.omistaja || '–')}</td>
+      <td><span class="text-muted small">${esc(p.tyyppi || '–')}</span></td>
+      <td class="text-center">${p.koko ? p.koko + ' m²' : '–'}</td>
       <td class="text-center">${vuokrattuBadge(p.vuokrattu)}</td>
-      <td>${esc(p.vuokralaisen_nimi || 'â')}</td>
-      <td class="text-end fw-semibold">${p.kokonaisumma ? formatEur(p.kokonaisumma) : 'â'}</td>
+      <td>${esc(p.vuokralaisen_nimi || '–')}</td>
+      <td class="text-end fw-semibold">${p.kokonaisumma ? formatEur(p.kokonaisumma) : '–'}</td>
       <td>${tilaBadge(p.asunnon_tila)}</td>
-      <td>${esc(p.vastuuhenkilo || 'â')}</td>
+      <td>${esc(p.vastuuhenkilo || '–')}</td>
       <td class="text-center" onclick="event.stopPropagation()">
         <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal(${p.id})" title="Muokkaa">
           <i class="bi bi-pencil"></i>
@@ -214,16 +214,16 @@ function renderTable(props) {
 function renderDashboardTable(props) {
   const tbody = document.getElementById('dashboard-tbody');
   if (props.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ei dataa. LisÃ¤Ã¤ kohteita tai tuo Excel.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ei dataa. Lisää kohteita tai tuo Excel.</td></tr>';
     return;
   }
   tbody.innerHTML = props.map(p => `
-    <tr onclick="showTab('kohteet')" style="cursor:pointer" title="Siirry kohteet-nÃ¤kymÃ¤Ã¤n">
-      <td><div class="fw-semibold">${esc(p.kohde_osoite || 'â')}</div></td>
-      <td>${esc(p.omistaja || 'â')}</td>
-      <td><span class="text-muted small">${esc(p.tyyppi || 'â')}</span></td>
-      <td>${esc(p.vuokralaisen_nimi || 'â')}</td>
-      <td class="fw-semibold">${p.kokonaisumma ? formatEur(p.kokonaisumma) : 'â'}</td>
+    <tr onclick="showTab('kohteet')" style="cursor:pointer" title="Siirry kohteet-näkymään">
+      <td><div class="fw-semibold">${esc(p.kohde_osoite || '–')}</div></td>
+      <td>${esc(p.omistaja || '–')}</td>
+      <td><span class="text-muted small">${esc(p.tyyppi || '–')}</span></td>
+      <td>${esc(p.vuokralaisen_nimi || '–')}</td>
+      <td class="fw-semibold">${p.kokonaisumma ? formatEur(p.kokonaisumma) : '–'}</td>
       <td>${tilaBadge(p.asunnon_tila)}</td>
     </tr>
   `).join('');
@@ -294,13 +294,13 @@ function viewProperty(id) {
   const sections = [
     { title: 'Kohteen tiedot', icon: 'bi-geo-alt', fields: [
       ['Osoite', p.kohde_osoite], ['Tyyppi', p.tyyppi],
-      ['Koko', p.koko ? p.koko + ' mÂ²' : null], ['Kaupunki', p.kaupunki],
+      ['Koko', p.koko ? p.koko + ' m²' : null], ['Kaupunki', p.kaupunki],
       ['Postinumero', p.postinumero], ['Asunnon tila', p.asunnon_tila],
     ]},
     { title: 'Omistajatiedot', icon: 'bi-person-vcard', fields: [
       ['Omistaja', p.omistaja], ['Kontakti', p.vuokranantajan_kontakti],
-      ['SÃ¤hkÃ¶posti', p.vuokranantajan_sahkoposti], ['Puhelin', p.vuokranantajan_puhelin],
-      ['VuokravÃ¤littÃ¤jÃ¤', p.vuokravalittaja], ['VastuuhenkilÃ¶', p.vastuuhenkilo],
+      ['Sähköposti', p.vuokranantajan_sahkoposti], ['Puhelin', p.vuokranantajan_puhelin],
+      ['Vuokravälittäjä', p.vuokravalittaja], ['Vastuuhenkilö', p.vastuuhenkilo],
     ]},
     { title: 'Sopimus & laskutus', icon: 'bi-file-text', fields: [
       ['Huolenpitosopimus', p.huolenpitosopimus], ['Huolenpidossa', p.huolenpidossa],
@@ -308,16 +308,16 @@ function viewProperty(id) {
       ['Laskutuksen status', p.laskutuksen_status], ['Vuokratilitykset', p.vuokratilitykset],
     ]},
     { title: 'Vuokrasopimus', icon: 'bi-calendar-range', fields: [
-      ['Alkaa', p.vuokrasopimus_alkaen], ['PÃ¤Ã¤ttyy', p.vuokrasopimus_paattyy],
+      ['Alkaa', p.vuokrasopimus_alkaen], ['Päättyy', p.vuokrasopimus_paattyy],
       ['Vuokrattu', p.vuokrattu], ['Vuokramarkkinalla', p.vuokramarkkinalla],
     ]},
     { title: 'Vuokralaistiedot', icon: 'bi-people', fields: [
       ['Nimi', p.vuokralaisen_nimi], ['Puhelin', p.vuokralaisen_puhelin],
-      ['SÃ¤hkÃ¶posti', p.vuokralaisen_sahkoposti],
+      ['Sähköposti', p.vuokralaisen_sahkoposti],
     ]},
     { title: 'Maksutiedot', icon: 'bi-currency-euro', fields: [
       ['Vuokra sop. alussa', p.vuokra_alussa ? formatEur(p.vuokra_alussa) : null],
-      ['Vuokra tÃ¤nÃ¤Ã¤n', p.vuokra_tanaan ? formatEur(p.vuokra_tanaan) : null],
+      ['Vuokra tänään', p.vuokra_tanaan ? formatEur(p.vuokra_tanaan) : null],
       ['Vesimaksut', p.vesimaksut ? formatEur(p.vesimaksut) : null],
       ['Muut maksut', p.muut_maksut], ['Saunamaksut', p.saunamaksut],
       ['Kokonaissumma', p.kokonaisumma ? formatEur(p.kokonaisumma) : null],
@@ -325,13 +325,13 @@ function viewProperty(id) {
     { title: 'Vakuus & avaimet', icon: 'bi-shield-lock', fields: [
       ['Vuokravakuus', p.vuokravakuus ? formatEur(p.vuokravakuus) : null],
       ['Vakuuden maksupv.', p.vakuuden_maksupv],
-      ['Kenen tilillÃ¤ vakuus', p.kenen_tililla_vakuus],
+      ['Kenen tilillä vakuus', p.kenen_tililla_vakuus],
       ['Avaimet luovutettu', p.avaimet_luovutettu],
       ['Vesimittari luettu', p.vesimittari_luettu],
     ]},
-    { title: 'VÃ¤litystiedot', icon: 'bi-receipt', fields: [
-      ['VÃ¤litys laskutettu', p.valitys_laskutettu],
-      ['VÃ¤lityshinta', p.valityshinta ? formatEur(p.valityshinta) : null],
+    { title: 'Välitystiedot', icon: 'bi-receipt', fields: [
+      ['Välitys laskutettu', p.valitys_laskutettu],
+      ['Välityshinta', p.valityshinta ? formatEur(p.valityshinta) : null],
     ]},
   ];
 
@@ -355,7 +355,7 @@ function viewProperty(id) {
   document.getElementById('view-modal-body').innerHTML =
     html + (p.lisatietoja ? `
       <div class="form-section mb-3">
-        <h6 class="form-section-title"><i class="bi bi-chat-text me-2 text-primary"></i>LisÃ¤tiedot</h6>
+        <h6 class="form-section-title"><i class="bi bi-chat-text me-2 text-primary"></i>Lisätiedot</h6>
         <p class="mb-0">${esc(p.lisatietoja)}</p>
       </div>` : '');
 
@@ -371,7 +371,7 @@ function viewProperty(id) {
 // =========================================
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').innerHTML = '<i class="bi bi-house-add me-2"></i>LisÃ¤Ã¤ uusi kohde';
+  document.getElementById('modal-title').innerHTML = '<i class="bi bi-house-add me-2"></i>Lisää uusi kohde';
   document.getElementById('property-form').reset();
   document.getElementById('f-id').value = '';
   new bootstrap.Modal(document.getElementById('propertyModal')).show();
@@ -442,7 +442,7 @@ async function saveProperty() {
     const result = await res.json();
     if (!res.ok) throw new Error(result.error || 'Virhe');
     bootstrap.Modal.getInstance(document.getElementById('propertyModal')).hide();
-    showToast(isEdit ? 'Kohde pÃ¤ivitetty!' : 'Kohde lisÃ¤tty!', 'success');
+    showToast(isEdit ? 'Kohde päivitetty!' : 'Kohde lisätty!', 'success');
     await loadProperties();
     await loadStats();
     await loadFilters();
@@ -457,10 +457,10 @@ async function saveProperty() {
 async function deleteProperty(id) {
   const p = allProperties.find(x => x.id === id);
   const name = p ? p.kohde_osoite : 'kohde';
-  if (!confirm(`Poistetaanko kohde "${name}"?\n\nTÃ¤tÃ¤ toimintoa ei voi peruuttaa.`)) return;
+  if (!confirm(`Poistetaanko kohde "${name}"?\n\nTätä toimintoa ei voi peruuttaa.`)) return;
   try {
     const res = await fetch(`/api/properties/${id}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Poisto epÃ¤onnistui');
+    if (!res.ok) throw new Error('Poisto epäonnistui');
     showToast('Kohde poistettu', 'success');
     await loadProperties();
     await loadStats();
@@ -506,7 +506,7 @@ async function importExcel() {
   try {
     const res = await fetch('/api/import', { method: 'POST', body: formData });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Tuonti epÃ¤onnistui');
+    if (!res.ok) throw new Error(data.error || 'Tuonti epäonnistui');
     let html = `<div class="alert alert-success mb-2">
       <i class="bi bi-check-circle me-1"></i><strong>${data.message}</strong></div>`;
     if (data.errors && data.errors.length > 0) {
@@ -539,7 +539,7 @@ async function loadUsers() {
     allUsers = await res.json();
     renderUsersTable();
   } catch (e) {
-    showToast('KÃ¤yttÃ¤jien lataus epÃ¤onnistui', 'danger');
+    showToast('Käyttäjien lataus epäonnistui', 'danger');
   }
 }
 
@@ -547,23 +547,23 @@ function renderUsersTable() {
   const tbody = document.getElementById('users-tbody');
   if (!tbody) return;
   if (allUsers.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ei kÃ¤yttÃ¤jiÃ¤.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ei käyttäjiä.</td></tr>';
     return;
   }
   tbody.innerHTML = allUsers.map(u => {
     const isSelf = u.id === currentUser?.id;
     const roleBadge = u.role === 'admin'
       ? '<span class="badge bg-primary">Admin</span>'
-      : '<span class="badge bg-secondary">KÃ¤yttÃ¤jÃ¤</span>';
+      : '<span class="badge bg-secondary">Käyttäjä</span>';
     const statusBadge = u.active
       ? '<span class="badge bg-success">Aktiivinen</span>'
       : '<span class="badge bg-warning text-dark">Ei-aktiivinen</span>';
     return `<tr>
-      <td><strong>${esc(u.username)}</strong>${isSelf ? ' <span class="text-primary small">(sinÃ¤)</span>' : ''}</td>
+      <td><strong>${esc(u.username)}</strong>${isSelf ? ' <span class="text-primary small">(sinä)</span>' : ''}</td>
       <td>${esc(u.fullname)}</td>
       <td>${roleBadge}</td>
       <td>${statusBadge}</td>
-      <td class="text-muted small">${u.created || 'â'}</td>
+      <td class="text-muted small">${u.created || '–'}</td>
       <td class="text-center">
         <button class="btn btn-sm btn-outline-primary me-1" onclick="openUserModal(${u.id})" title="Muokkaa">
           <i class="bi bi-pencil"></i>
@@ -584,7 +584,7 @@ function openUserModal(id) {
   if (id) {
     const u = allUsers.find(x => x.id === id);
     if (!u) return;
-    document.getElementById('user-modal-title').innerHTML = '<i class="bi bi-pencil me-2"></i>Muokkaa kÃ¤yttÃ¤jÃ¤Ã¤';
+    document.getElementById('user-modal-title').innerHTML = '<i class="bi bi-pencil me-2"></i>Muokkaa käyttäjää';
     document.getElementById('u-username').value = u.username;
     document.getElementById('u-fullname').value = u.fullname;
     document.getElementById('u-password').value = '';
@@ -592,7 +592,7 @@ function openUserModal(id) {
     document.getElementById('u-active').value = u.active ? '1' : '0';
     document.getElementById('u-pw-hint').style.display = '';
   } else {
-    document.getElementById('user-modal-title').innerHTML = '<i class="bi bi-person-plus me-2"></i>Uusi kÃ¤yttÃ¤jÃ¤';
+    document.getElementById('user-modal-title').innerHTML = '<i class="bi bi-person-plus me-2"></i>Uusi käyttäjä';
     document.getElementById('u-username').value = '';
     document.getElementById('u-fullname').value = '';
     document.getElementById('u-password').value = '';
@@ -634,7 +634,7 @@ async function saveUser() {
       return;
     }
     bootstrap.Modal.getInstance(document.getElementById('userModal')).hide();
-    showToast(id ? 'KÃ¤yttÃ¤jÃ¤ pÃ¤ivitetty!' : 'KÃ¤yttÃ¤jÃ¤ luotu!', 'success');
+    showToast(id ? 'Käyttäjä päivitetty!' : 'Käyttäjä luotu!', 'success');
     await loadUsers();
     // Refresh navbar if self was edited
     if (id && parseInt(id) === currentUser?.id) {
@@ -651,12 +651,12 @@ async function saveUser() {
 }
 
 async function deleteUser(id, username) {
-  if (!confirm(`Poistetaanko kÃ¤yttÃ¤jÃ¤ "${username}"?\n\nTÃ¤tÃ¤ toimintoa ei voi peruuttaa.`)) return;
+  if (!confirm(`Poistetaanko käyttäjä "${username}"?\n\nTätä toimintoa ei voi peruuttaa.`)) return;
   try {
     const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Poisto epÃ¤onnistui');
-    showToast(`KÃ¤yttÃ¤jÃ¤ "${username}" poistettu`, 'success');
+    if (!res.ok) throw new Error(data.error || 'Poisto epäonnistui');
+    showToast(`Käyttäjä "${username}" poistettu`, 'success');
     await loadUsers();
   } catch (e) {
     showToast('Virhe: ' + e.message, 'danger');
@@ -674,7 +674,7 @@ async function changePassword() {
   errEl.classList.add('d-none');
 
   if (nw !== nw2) {
-    errEl.textContent = 'Salasanat eivÃ¤t tÃ¤smÃ¤Ã¤';
+    errEl.textContent = 'Salasanat eivät täsmää';
     errEl.classList.remove('d-none');
     return;
   }
@@ -703,7 +703,7 @@ async function changePassword() {
 // Helpers
 // =========================================
 function formatEur(n) {
-  if (n === null || n === undefined) return 'â';
+  if (n === null || n === undefined) return '–';
   return new Intl.NumberFormat('fi-FI', {
     style: 'currency', currency: 'EUR', maximumFractionDigits: 0
   }).format(n);
@@ -716,18 +716,18 @@ function esc(str) {
 }
 
 function vuokrattuBadge(v) {
-  if (!v) return '<span class="badge bg-secondary">â</span>';
-  return v.toLowerCase() === 'kyllÃ¤'
-    ? '<span class="badge badge-vuokrattu">KyllÃ¤</span>'
+  if (!v) return '<span class="badge bg-secondary">–</span>';
+  return v.toLowerCase() === 'kyllä'
+    ? '<span class="badge badge-vuokrattu">Kyllä</span>'
     : '<span class="badge badge-vapaa">Ei</span>';
 }
 
 function tilaBadge(v) {
-  if (!v) return '<span class="text-muted">â</span>';
+  if (!v) return '<span class="text-muted">–</span>';
   if (v.toLowerCase() === 'ok') return '<span class="badge badge-ok">OK</span>';
   if (v.toLowerCase().includes('selvitys'))
-    return `<span class="badge badge-selvitys" title="${esc(v)}">SelvityksessÃ¤</span>`;
-  return `<span class="badge bg-secondary" title="${esc(v)}">${esc(v.length > 14 ? v.substring(0, 14) + 'â¦' : v)}</span>`;
+    return `<span class="badge badge-selvitys" title="${esc(v)}">Selvityksessä</span>`;
+  return `<span class="badge bg-secondary" title="${esc(v)}">${esc(v.length > 14 ? v.substring(0, 14) + '…' : v)}</span>`;
 }
 
 function showToast(msg, type = 'success') {
