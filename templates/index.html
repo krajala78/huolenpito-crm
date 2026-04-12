@@ -3,24 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Value LKV – Huolenpito CRM</title>
+  <title>Value LKV â Huolenpito CRM</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="/static/style.css" rel="stylesheet">
+  <style>
+    /* ââ Login overlay ââ */
+    #login-overlay {
+      position: fixed; inset: 0;
+      background: #0f1117;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    #login-overlay.d-none { display: none !important; }
+    .login-card {
+      background: #1a1d27;
+      border: 1px solid #2e3250;
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%; max-width: 420px;
+    }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo .icon {
+      width: 60px; height: 60px;
+      background: rgba(13,110,253,.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 12px;
+    }
+    .login-logo h2 { color: #e8eaf0; font-size: 22px; }
+    .login-logo p  { color: #8b8fa8; font-size: 14px; }
+    .login-card .form-control {
+      background: #22263a; border-color: #2e3250; color: #e8eaf0;
+    }
+    .login-card .form-control:focus {
+      background: #22263a; border-color: #0d6efd; color: #e8eaf0; box-shadow: none;
+    }
+    .login-card label { color: #8b8fa8; font-size: 13px; font-weight: 600; }
+    .login-card .form-control::placeholder { color: #555; }
+
+    /* ââ User badge in navbar ââ */
+    #navbar-user { display: flex; align-items: center; gap: 10px; }
+    .nav-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; text-transform: uppercase;
+      background: rgba(255,255,255,.2);
+    }
+    .nav-role-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+      padding: 2px 7px; border-radius: 20px;
+    }
+    .nav-role-admin { background: rgba(255,255,255,.2); color: #fff; }
+    .nav-role-user  { background: rgba(25,200,120,.25); color: #19c878; }
+  </style>
 </head>
 <body>
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     LOGIN OVERLAY
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">ð </div>
+      <h2 class="fw-bold">Value LKV</h2>
+      <p>Huolenpito CRM â kirjaudu sisÃ¤Ã¤n</p>
+    </div>
+
+    <div id="login-error" class="alert alert-danger py-2 small d-none">
+      VÃ¤Ã¤rÃ¤ kÃ¤yttÃ¤jÃ¤tunnus tai salasana.
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">KÃ¤yttÃ¤jÃ¤tunnus</label>
+      <input id="login-username" type="text" class="form-control" placeholder="kÃ¤yttÃ¤jÃ¤tunnus"
+        autocomplete="username" />
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Salasana</label>
+      <input id="login-password" type="password" class="form-control" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+        autocomplete="current-password" />
+    </div>
+    <button class="btn btn-primary w-100" id="login-btn" onclick="doLogin()">
+      <i class="bi bi-box-arrow-in-right me-1"></i>Kirjaudu sisÃ¤Ã¤n
+    </button>
+  </div>
+</div>
+
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     MAIN APP
+ââââââââââââââââââââââââââââââââââââââââââ -->
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid px-4">
     <a class="navbar-brand fw-bold" href="#">
-      <i class="bi bi-house-heart-fill me-2"></i>Value LKV – Huolenpito CRM
+      <i class="bi bi-house-heart-fill me-2"></i>Value LKV â Huolenpito CRM
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link active" href="#" onclick="showTab('dashboard')">
             <i class="bi bi-speedometer2 me-1"></i>Dashboard
@@ -33,7 +119,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" onclick="openAddModal()">
-            <i class="bi bi-plus-circle me-1"></i>Lisää kohde
+            <i class="bi bi-plus-circle me-1"></i>LisÃ¤Ã¤ kohde
           </a>
         </li>
         <li class="nav-item">
@@ -41,7 +127,23 @@
             <i class="bi bi-file-earmark-excel me-1"></i>Tuo Excel
           </a>
         </li>
+        <!-- Admin only -->
+        <li class="nav-item d-none" id="nav-kayttajat">
+          <a class="nav-link" href="#" onclick="showTab('kayttajat')">
+            <i class="bi bi-people me-1"></i>KÃ¤yttÃ¤jÃ¤t
+          </a>
+        </li>
       </ul>
+
+      <!-- User info + logout -->
+      <div id="navbar-user" class="ms-auto me-2 d-none">
+        <div class="nav-avatar" id="nav-avatar">A</div>
+        <span class="text-white small fw-semibold" id="nav-fullname">â</span>
+        <span class="nav-role-badge nav-role-admin" id="nav-role-badge">Admin</span>
+        <button class="btn btn-sm btn-outline-light ms-2" onclick="doLogout()">
+          <i class="bi bi-box-arrow-right me-1"></i>Kirjaudu ulos
+        </button>
+      </div>
     </div>
   </div>
 </nav>
@@ -63,8 +165,8 @@
               <i class="bi bi-building fs-3"></i>
             </div>
             <div>
-              <div class="text-muted small">Kohteet yhteensä</div>
-              <div class="fs-2 fw-bold" id="stat-total">–</div>
+              <div class="text-muted small">Kohteet yhteensÃ¤</div>
+              <div class="fs-2 fw-bold" id="stat-total">â</div>
             </div>
           </div>
         </div>
@@ -77,7 +179,7 @@
             </div>
             <div>
               <div class="text-muted small">Vuokrattu</div>
-              <div class="fs-2 fw-bold text-success" id="stat-vuokrattu">–</div>
+              <div class="fs-2 fw-bold text-success" id="stat-vuokrattu">â</div>
             </div>
           </div>
         </div>
@@ -90,7 +192,7 @@
             </div>
             <div>
               <div class="text-muted small">Vapaat</div>
-              <div class="fs-2 fw-bold text-warning" id="stat-vapaat">–</div>
+              <div class="fs-2 fw-bold text-warning" id="stat-vapaat">â</div>
             </div>
           </div>
         </div>
@@ -103,19 +205,18 @@
             </div>
             <div>
               <div class="text-muted small">Vuokratulot/kk</div>
-              <div class="fs-2 fw-bold text-info" id="stat-vuokra">–</div>
+              <div class="fs-2 fw-bold text-info" id="stat-vuokra">â</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Recent properties table on dashboard -->
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3">
-        <h6 class="mb-0 fw-bold"><i class="bi bi-list-ul me-2"></i>Viimeisimmät kohteet</h6>
+        <h6 class="mb-0 fw-bold"><i class="bi bi-list-ul me-2"></i>ViimeisimmÃ¤t kohteet</h6>
         <button class="btn btn-sm btn-primary" onclick="showTab('kohteet')">
-          Näytä kaikki <i class="bi bi-arrow-right ms-1"></i>
+          NÃ¤ytÃ¤ kaikki <i class="bi bi-arrow-right ms-1"></i>
         </button>
       </div>
       <div class="card-body p-0">
@@ -123,12 +224,8 @@
           <table class="table table-hover mb-0" id="dashboard-table">
             <thead class="table-light">
               <tr>
-                <th>Kohde</th>
-                <th>Omistaja</th>
-                <th>Tyyppi</th>
-                <th>Vuokralainen</th>
-                <th>Vuokra/kk</th>
-                <th>Tila</th>
+                <th>Kohde</th><th>Omistaja</th><th>Tyyppi</th>
+                <th>Vuokralainen</th><th>Vuokra/kk</th><th>Tila</th>
               </tr>
             </thead>
             <tbody id="dashboard-tbody"></tbody>
@@ -145,11 +242,10 @@
         <i class="bi bi-building me-2"></i>Kohteet
       </h4>
       <button class="btn btn-primary" onclick="openAddModal()">
-        <i class="bi bi-plus-circle me-1"></i>Lisää kohde
+        <i class="bi bi-plus-circle me-1"></i>LisÃ¤Ã¤ kohde
       </button>
     </div>
 
-    <!-- Filters -->
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-body py-3">
         <div class="row g-2 align-items-end">
@@ -157,15 +253,15 @@
             <label class="form-label small text-muted mb-1">Haku</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-search"></i></span>
-              <input type="text" id="search-input" class="form-control" placeholder="Osoite, omistaja, vuokralainen..."
-                oninput="filterProperties()">
+              <input type="text" id="search-input" class="form-control"
+                placeholder="Osoite, omistaja, vuokralainen..." oninput="filterProperties()">
             </div>
           </div>
           <div class="col-6 col-md-2">
             <label class="form-label small text-muted mb-1">Vuokrattu</label>
             <select id="filter-vuokrattu" class="form-select" onchange="filterProperties()">
               <option value="">Kaikki</option>
-              <option value="Kyllä">Kyllä</option>
+              <option value="KyllÃ¤">KyllÃ¤</option>
               <option value="Ei">Ei</option>
             </select>
           </div>
@@ -176,36 +272,30 @@
             </select>
           </div>
           <div class="col-6 col-md-2">
-            <label class="form-label small text-muted mb-1">Vastuuhenkilö</label>
+            <label class="form-label small text-muted mb-1">VastuuhenkilÃ¶</label>
             <select id="filter-vastuuhenkilo" class="form-select" onchange="filterProperties()">
               <option value="">Kaikki</option>
             </select>
           </div>
           <div class="col-6 col-md-2">
             <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
-              <i class="bi bi-x-circle me-1"></i>Tyhjennä
+              <i class="bi bi-x-circle me-1"></i>TyhjennÃ¤
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Properties table -->
     <div class="card border-0 shadow-sm">
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover mb-0" id="properties-table">
             <thead class="table-light">
               <tr>
-                <th>Kohde / Osoite</th>
-                <th>Omistaja</th>
-                <th>Tyyppi</th>
-                <th class="text-center">Koko m²</th>
-                <th class="text-center">Vuokrattu</th>
-                <th>Vuokralainen</th>
-                <th class="text-end">Vuokra/kk</th>
-                <th>Asunnon tila</th>
-                <th>Vastuuhenkilö</th>
+                <th>Kohde / Osoite</th><th>Omistaja</th><th>Tyyppi</th>
+                <th class="text-center">Koko mÂ²</th><th class="text-center">Vuokrattu</th>
+                <th>Vuokralainen</th><th class="text-end">Vuokra/kk</th>
+                <th>Asunnon tila</th><th>VastuuhenkilÃ¶</th>
                 <th class="text-center">Toiminnot</th>
               </tr>
             </thead>
@@ -230,12 +320,12 @@
           <div class="card-body">
             <p class="text-muted">
               Lataa <strong>Value LKV Huolenpito CRM</strong> -muotoinen Excel-tiedosto (.xlsx).
-              Tiedoston sarakkeiden tulee vastata alkuperäistä formaattia.
+              Tiedoston sarakkeiden tulee vastata alkuperÃ¤istÃ¤ formaattia.
             </p>
             <div class="border-2 border-dashed rounded-3 p-5 text-center bg-light" id="drop-zone"
               ondragover="event.preventDefault()" ondrop="handleDrop(event)">
               <i class="bi bi-cloud-upload fs-1 text-primary mb-3 d-block"></i>
-              <p class="mb-2">Vedä tiedosto tähän tai</p>
+              <p class="mb-2">VedÃ¤ tiedosto tÃ¤hÃ¤n tai</p>
               <label class="btn btn-primary">
                 <i class="bi bi-folder2-open me-1"></i>Valitse tiedosto
                 <input type="file" id="excel-file-input" accept=".xlsx,.xls" class="d-none"
@@ -256,9 +346,43 @@
           <div class="card-header bg-white"><strong>Tuonnin tulos</strong></div>
           <div class="card-body">
             <div id="import-result" class="text-muted">
-              <i class="bi bi-info-circle me-1"></i>Tuo Excel-tiedosto nähdäksesi tulokset.
+              <i class="bi bi-info-circle me-1"></i>Tuo Excel-tiedosto nÃ¤hdÃ¤ksesi tulokset.
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== KÃYTTÃJÃT TAB (admin only) ===== -->
+  <div id="tab-kayttajat" class="d-none">
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
+      <h4 class="mb-0 text-muted me-auto">
+        <i class="bi bi-people me-2"></i>KÃ¤yttÃ¤jÃ¤hallinta
+      </h4>
+      <button class="btn btn-primary" onclick="openUserModal()">
+        <i class="bi bi-person-plus me-1"></i>Uusi kÃ¤yttÃ¤jÃ¤
+      </button>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>KÃ¤yttÃ¤jÃ¤tunnus</th>
+                <th>Koko nimi</th>
+                <th>Rooli</th>
+                <th>Tila</th>
+                <th>Luotu</th>
+                <th class="text-center">Toiminnot</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="6" class="text-center py-4 text-muted">Ladataan...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -267,13 +391,13 @@
 </div><!-- /container -->
 
 
-<!-- ===== ADD/EDIT MODAL ===== -->
+<!-- ===== ADD/EDIT PROPERTY MODAL ===== -->
 <div class="modal fade" id="propertyModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="modal-title">
-          <i class="bi bi-house-add me-2"></i>Lisää kohde
+          <i class="bi bi-house-add me-2"></i>LisÃ¤Ã¤ kohde
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
@@ -281,11 +405,8 @@
         <form id="property-form">
           <input type="hidden" id="f-id">
 
-          <!-- Section 1: Kohteen tiedot -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-geo-alt me-2 text-primary"></i>Kohteen tiedot
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-geo-alt me-2 text-primary"></i>Kohteen tiedot</h6>
             <div class="row g-3">
               <div class="col-12 col-md-6">
                 <label class="form-label">Kohde / Osoite <span class="text-danger">*</span></label>
@@ -294,19 +415,15 @@
               <div class="col-12 col-md-6">
                 <label class="form-label">Tyyppi</label>
                 <select class="form-select" id="f-tyyppi">
-                  <option value="">– valitse –</option>
-                  <option>Asunto / Yksiö</option>
-                  <option>Asunto / kaksio</option>
-                  <option>Asunto / Kaksio</option>
-                  <option>Asunto / Kolmio</option>
-                  <option>Asunto / Nelikko</option>
-                  <option>Asunto / 5h+</option>
-                  <option>Liike / Toimisto</option>
-                  <option>Muu</option>
+                  <option value="">â valitse â</option>
+                  <option>Asunto / YksiÃ¶</option><option>Asunto / kaksio</option>
+                  <option>Asunto / Kaksio</option><option>Asunto / Kolmio</option>
+                  <option>Asunto / Nelikko</option><option>Asunto / 5h+</option>
+                  <option>Liike / Toimisto</option><option>Muu</option>
                 </select>
               </div>
               <div class="col-6 col-md-2">
-                <label class="form-label">Koko (m²)</label>
+                <label class="form-label">Koko (mÂ²)</label>
                 <input type="number" class="form-control" id="f-koko" step="0.5" min="0">
               </div>
               <div class="col-6 col-md-5">
@@ -324,11 +441,8 @@
             </div>
           </div>
 
-          <!-- Section 2: Omistajatiedot -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-person-vcard me-2 text-primary"></i>Omistajatiedot
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-person-vcard me-2 text-primary"></i>Omistajatiedot</h6>
             <div class="row g-3">
               <div class="col-12 col-md-4">
                 <label class="form-label">Omistaja</label>
@@ -343,113 +457,90 @@
                 <input type="text" class="form-control" id="f-vuokranantajan_puhelin">
               </div>
               <div class="col-12 col-md-6">
-                <label class="form-label">Vuokranantajan sähköposti</label>
+                <label class="form-label">Vuokranantajan sÃ¤hkÃ¶posti</label>
                 <input type="email" class="form-control" id="f-vuokranantajan_sahkoposti">
               </div>
               <div class="col-12 col-md-3">
-                <label class="form-label">Vuokravälittäjä</label>
+                <label class="form-label">VuokravÃ¤littÃ¤jÃ¤</label>
                 <input type="text" class="form-control" id="f-vuokravalittaja">
               </div>
               <div class="col-12 col-md-3">
-                <label class="form-label">Vastuuhenkilö</label>
+                <label class="form-label">VastuuhenkilÃ¶</label>
                 <input type="text" class="form-control" id="f-vastuuhenkilo">
               </div>
             </div>
           </div>
 
-          <!-- Section 3: Sopimus & laskutus -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-file-text me-2 text-primary"></i>Sopimus & laskutus
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-file-text me-2 text-primary"></i>Sopimus & laskutus</h6>
             <div class="row g-3">
               <div class="col-6 col-md-3">
                 <label class="form-label">Huolenpitosopimus</label>
                 <select class="form-select" id="f-huolenpitosopimus">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei</option>
-                  <option>Allekirjoituksessa</option>
+                  <option value="">â valitse â</option>
+                  <option>KyllÃ¤</option><option>Ei</option><option>Allekirjoituksessa</option>
                 </select>
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Huolenpidossa</label>
                 <select class="form-select" id="f-huolenpidossa">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei</option>
+                  <option value="">â valitse â</option><option>KyllÃ¤</option><option>Ei</option>
                 </select>
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Vuokrauksessa</label>
                 <select class="form-select" id="f-vuokrauksessa">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei</option>
+                  <option value="">â valitse â</option><option>KyllÃ¤</option><option>Ei</option>
                 </select>
               </div>
               <div class="col-6 col-md-3">
-                <label class="form-label">Laskutusperuste (€/kk)</label>
+                <label class="form-label">Laskutusperuste (â¬/kk)</label>
                 <input type="text" class="form-control" id="f-laskutusperuste" placeholder="esim. 36 tai Tuntilaskutus">
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Laskutuksen status</label>
                 <select class="form-select" id="f-laskutuksen_status">
-                  <option value="">– valitse –</option>
-                  <option>OK</option>
-                  <option>Avoin</option>
-                  <option>Ongelma</option>
+                  <option value="">â valitse â</option>
+                  <option>OK</option><option>Avoin</option><option>Ongelma</option>
                 </select>
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Vuokratilitykset</label>
                 <select class="form-select" id="f-vuokratilitykset">
-                  <option value="">– valitse –</option>
-                  <option>Tilitys</option>
-                  <option>Reskontra</option>
+                  <option value="">â valitse â</option><option>Tilitys</option><option>Reskontra</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <!-- Section 4: Vuokrasopimus -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-calendar-range me-2 text-primary"></i>Vuokrasopimus
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-calendar-range me-2 text-primary"></i>Vuokrasopimus</h6>
             <div class="row g-3">
               <div class="col-6 col-md-3">
                 <label class="form-label">Vuokrasopimus alkaen</label>
                 <input type="date" class="form-control" id="f-vuokrasopimus_alkaen">
               </div>
               <div class="col-6 col-md-3">
-                <label class="form-label">Vuokrasopimus päättyy</label>
+                <label class="form-label">Vuokrasopimus pÃ¤Ã¤ttyy</label>
                 <input type="date" class="form-control" id="f-vuokrasopimus_paattyy">
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Vuokrattu</label>
                 <select class="form-select" id="f-vuokrattu">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei</option>
+                  <option value="">â valitse â</option><option>KyllÃ¤</option><option>Ei</option>
                 </select>
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Vuokramarkkinalla</label>
                 <select class="form-select" id="f-vuokramarkkinalla">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei</option>
+                  <option value="">â valitse â</option><option>KyllÃ¤</option><option>Ei</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <!-- Section 5: Vuokralaistiedot -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-people me-2 text-primary"></i>Vuokralaistiedot
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-people me-2 text-primary"></i>Vuokralaistiedot</h6>
             <div class="row g-3">
               <div class="col-12 col-md-4">
                 <label class="form-label">Vuokralaisen nimi</label>
@@ -460,108 +551,90 @@
                 <input type="text" class="form-control" id="f-vuokralaisen_puhelin">
               </div>
               <div class="col-12 col-md-4">
-                <label class="form-label">Vuokralaisen sähköposti</label>
+                <label class="form-label">Vuokralaisen sÃ¤hkÃ¶posti</label>
                 <input type="email" class="form-control" id="f-vuokralaisen_sahkoposti">
               </div>
             </div>
           </div>
 
-          <!-- Section 6: Maksutiedot -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-currency-euro me-2 text-primary"></i>Maksutiedot
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-currency-euro me-2 text-primary"></i>Maksutiedot</h6>
             <div class="row g-3">
               <div class="col-6 col-md-2">
-                <label class="form-label">Vuokra sop. alussa (€)</label>
+                <label class="form-label">Vuokra sop. alussa (â¬)</label>
                 <input type="number" class="form-control" id="f-vuokra_alussa" step="0.01" min="0">
               </div>
               <div class="col-6 col-md-2">
-                <label class="form-label">Vuokra tänään (€)</label>
+                <label class="form-label">Vuokra tÃ¤nÃ¤Ã¤n (â¬)</label>
                 <input type="number" class="form-control" id="f-vuokra_tanaan" step="0.01" min="0">
               </div>
               <div class="col-6 col-md-2">
-                <label class="form-label">Vesimaksut (€)</label>
+                <label class="form-label">Vesimaksut (â¬)</label>
                 <input type="number" class="form-control" id="f-vesimaksut" step="0.01" min="0">
               </div>
               <div class="col-6 col-md-2">
                 <label class="form-label">Muut maksut</label>
-                <input type="text" class="form-control" id="f-muut_maksut" placeholder="€ tai Ei">
+                <input type="text" class="form-control" id="f-muut_maksut" placeholder="â¬ tai Ei">
               </div>
               <div class="col-6 col-md-2">
                 <label class="form-label">Saunamaksut</label>
-                <input type="text" class="form-control" id="f-saunamaksut" placeholder="€ tai Ei">
+                <input type="text" class="form-control" id="f-saunamaksut" placeholder="â¬ tai Ei">
               </div>
               <div class="col-6 col-md-2">
-                <label class="form-label">Kokonaissumma (€)</label>
+                <label class="form-label">Kokonaissumma (â¬)</label>
                 <input type="number" class="form-control" id="f-kokonaisumma" step="0.01" min="0">
               </div>
             </div>
           </div>
 
-          <!-- Section 7: Vakuus & avaimet -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-shield-lock me-2 text-primary"></i>Vakuus & avaimet
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-shield-lock me-2 text-primary"></i>Vakuus & avaimet</h6>
             <div class="row g-3">
               <div class="col-6 col-md-3">
-                <label class="form-label">Vuokravakuus (€)</label>
+                <label class="form-label">Vuokravakuus (â¬)</label>
                 <input type="number" class="form-control" id="f-vuokravakuus" step="0.01" min="0">
               </div>
               <div class="col-6 col-md-3">
-                <label class="form-label">Vakuuden maksupäivä</label>
+                <label class="form-label">Vakuuden maksupÃ¤ivÃ¤</label>
                 <input type="text" class="form-control" id="f-vakuuden_maksupv"
                   placeholder="esim. 2025-01-15 tai Takuuvapaapalvelu">
               </div>
               <div class="col-6 col-md-3">
-                <label class="form-label">Kenen tilillä vakuus</label>
+                <label class="form-label">Kenen tilillÃ¤ vakuus</label>
                 <input type="text" class="form-control" id="f-kenen_tililla_vakuus">
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Avaimet luovutettu</label>
-                <input type="text" class="form-control" id="f-avaimet_luovutettu"
-                  placeholder="pvm tai kuvaus">
+                <input type="text" class="form-control" id="f-avaimet_luovutettu" placeholder="pvm tai kuvaus">
               </div>
               <div class="col-6 col-md-3">
                 <label class="form-label">Vesimittari luettu</label>
-                <input type="text" class="form-control" id="f-vesimittari_luettu"
-                  placeholder="pvm tai Kyllä/Ei">
+                <input type="text" class="form-control" id="f-vesimittari_luettu" placeholder="pvm tai KyllÃ¤/Ei">
               </div>
             </div>
           </div>
 
-          <!-- Section 8: Välitystiedot -->
           <div class="form-section mb-4">
-            <h6 class="form-section-title">
-              <i class="bi bi-receipt me-2 text-primary"></i>Välitystiedot
-            </h6>
+            <h6 class="form-section-title"><i class="bi bi-receipt me-2 text-primary"></i>VÃ¤litystiedot</h6>
             <div class="row g-3">
               <div class="col-6 col-md-4">
-                <label class="form-label">Välitys laskutettu</label>
+                <label class="form-label">VÃ¤litys laskutettu</label>
                 <select class="form-select" id="f-valitys_laskutettu">
-                  <option value="">– valitse –</option>
-                  <option>Kyllä</option>
-                  <option>Ei välitystä</option>
-                  <option>Ei</option>
+                  <option value="">â valitse â</option>
+                  <option>KyllÃ¤</option><option>Ei vÃ¤litystÃ¤</option><option>Ei</option>
                 </select>
               </div>
               <div class="col-6 col-md-4">
-                <label class="form-label">Välityshinta sis. alv (€)</label>
+                <label class="form-label">VÃ¤lityshinta sis. alv (â¬)</label>
                 <input type="number" class="form-control" id="f-valityshinta" step="0.01" min="0">
               </div>
             </div>
           </div>
 
-          <!-- Section 9: Lisätiedot -->
           <div class="form-section mb-2">
-            <h6 class="form-section-title">
-              <i class="bi bi-chat-text me-2 text-primary"></i>Lisätiedot
-            </h6>
-            <textarea class="form-control" id="f-lisatietoja" rows="3"
-              placeholder="Vapaat lisätiedot..."></textarea>
+            <h6 class="form-section-title"><i class="bi bi-chat-text me-2 text-primary"></i>LisÃ¤tiedot</h6>
+            <textarea class="form-control" id="f-lisatietoja" rows="3" placeholder="Vapaat lisÃ¤tiedot..."></textarea>
           </div>
-
         </form>
       </div>
       <div class="modal-footer">
@@ -592,6 +665,90 @@
         <button type="button" class="btn btn-primary" id="view-edit-btn">
           <i class="bi bi-pencil me-1"></i>Muokkaa
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD/EDIT USER MODAL ===== -->
+<div class="modal fade" id="userModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="user-modal-title">
+          <i class="bi bi-person-plus me-2"></i>Uusi kÃ¤yttÃ¤jÃ¤
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-user-id" />
+        <div class="mb-3">
+          <label class="form-label">KÃ¤yttÃ¤jÃ¤tunnus <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="u-username" placeholder="esim. matti.virtanen" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Koko nimi <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="u-fullname" placeholder="esim. Matti Virtanen" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">
+            Salasana
+            <span class="text-muted small" id="u-pw-hint">(jÃ¤tÃ¤ tyhjÃ¤ksi sÃ¤ilyttÃ¤Ã¤ksesi nykyisen)</span>
+          </label>
+          <input type="password" class="form-control" id="u-password" placeholder="vÃ¤hintÃ¤Ã¤n 4 merkkiÃ¤" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rooli</label>
+          <select class="form-select" id="u-role">
+            <option value="user">KÃ¤yttÃ¤jÃ¤ (user)</option>
+            <option value="admin">YllÃ¤pitÃ¤jÃ¤ (admin)</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tila</label>
+          <select class="form-select" id="u-active">
+            <option value="1">Aktiivinen</option>
+            <option value="0">Ei-aktiivinen</option>
+          </select>
+        </div>
+        <div id="user-modal-error" class="alert alert-danger py-2 small d-none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Peruuta</button>
+        <button type="button" class="btn btn-primary" onclick="saveUser()">
+          <i class="bi bi-check-lg me-1"></i>Tallenna
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHANGE PASSWORD MODAL ===== -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:400px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-key me-2"></i>Vaihda salasana</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Nykyinen salasana</label>
+          <input type="password" class="form-control" id="pw-old" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Uusi salasana</label>
+          <input type="password" class="form-control" id="pw-new" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Toista uusi salasana</label>
+          <input type="password" class="form-control" id="pw-new2" />
+        </div>
+        <div id="pw-error" class="alert alert-danger py-2 small d-none"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Peruuta</button>
+        <button type="button" class="btn btn-primary" onclick="changePassword()">Vaihda</button>
       </div>
     </div>
   </div>
