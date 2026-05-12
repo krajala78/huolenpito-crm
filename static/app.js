@@ -167,31 +167,116 @@ async function loadProperties() {
   } catch (e) { showToast('Kohteiden lataus epäonnistui', 'danger'); }
 }
 
+function cell(v) { return '<td>' + esc(v || '-') + '</td>'; }
+function cellC(v) { return '<td class="text-center">' + esc(v || '-') + '</td>'; }
+function cellE(v) { return '<td class="text-end">' + esc(v || '-') + '</td>'; }
+function cellEur(v) { return '<td class="text-end">' + (v != null && v !== '' ? formatEur(v) : '-') + '</td>'; }
+
 function renderTable(props) {
   const tbody   = document.getElementById('properties-tbody');
   const countEl = document.getElementById('result-count');
   if (countEl) countEl.textContent = props.length + ' kohdetta';
   if (!props.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-5 text-muted">Ei kohteita.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="43" class="text-center py-5 text-muted">Ei kohteita.</td></tr>';
     return;
   }
+  var stickyTd = 'style="position:sticky;left:0;background:#fff;border-right:2px solid #dee2e6;z-index:1"';
+  var stickyAct = 'style="position:sticky;right:0;background:#fff;border-left:2px solid #dee2e6;z-index:1"';
   tbody.innerHTML = props.map(p =>
     '<tr onclick="viewProperty(' + p.id + ')" style="cursor:pointer">'
-    + '<td><div class="fw-semibold">' + esc(p.kohde_osoite || '-') + '</div>'
-    + (p.kaupunki ? '<small class="text-muted">' + esc(p.kaupunki) + ' ' + esc(p.postinumero || '') + '</small>' : '')
+    // 1. Kohde / Osoite — sticky left
+    + '<td ' + stickyTd + '>'
+    +   '<div class="fw-semibold">' + esc(p.kohde_osoite || '-') + '</div>'
+    +   (p.postinumero ? '<small class="text-muted">' + esc(p.postinumero) + '</small>' : '')
     + '</td>'
-    + '<td>' + esc(p.omistaja || '-') + '</td>'
-    + '<td><span class="text-muted small">' + esc(p.tyyppi || '-') + '</span></td>'
-    + '<td class="text-center">' + (p.koko ? p.koko + ' m2' : '-') + '</td>'
+    // 2. Omistaja
+    + cell(p.omistaja)
+    // 3. Tyyppi
+    + cell(p.tyyppi)
+    // 4. Koko
+    + '<td class="text-center">' + (p.koko != null ? p.koko + ' m²' : '-') + '</td>'
+    // 5. Kaupunki
+    + cell(p.kaupunki)
+    // 6. Vastuuhenkilö
+    + cell(p.vastuuhenkilo)
+    // 7. Huolenpitosopimus
+    + cell(p.huolenpitosopimus)
+    // 8. Huolenpidossa
+    + cellC(p.huolenpidossa)
+    // 9. Vuokrauksessa
+    + cellC(p.vuokrauksessa)
+    // 10. Vuokravälittäjä
+    + cell(p.vuokravalittaja)
+    // 11. Vuokrattu
     + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
-    + '<td>' + esc(p.vuokralaisen_nimi || '-') + '</td>'
-    + '<td class="text-end fw-semibold">' + (p.kokonaisumma ? formatEur(p.kokonaisumma) : '-') + '</td>'
+    // 12. Vuokramarkkinalla
+    + cellC(p.vuokramarkkinalla)
+    // 13. Asunnon tila
     + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
-    + '<td>' + esc(p.vastuuhenkilo || '-') + '</td>'
-    + '<td class="text-center" onclick="event.stopPropagation()">'
+    // 14. Vuokralainen
+    + cell(p.vuokralaisen_nimi)
+    // 15. Vuokralaisen puhelin
+    + cell(p.vuokralaisen_puhelin)
+    // 16. Vuokralaisen sähköposti
+    + cell(p.vuokralaisen_sahkoposti)
+    // 17. Vuokrasopimus alkaen
+    + cell(p.vuokrasopimus_alkaen)
+    // 18. Vuokrasopimus päättyy
+    + cell(p.vuokrasopimus_paattyy)
+    // 19. Vuokra alussa
+    + cellEur(p.vuokra_alussa)
+    // 20. Vuokra tänään
+    + cellEur(p.vuokra_tanaan)
+    // 21. Vesimaksut
+    + cellEur(p.vesimaksut)
+    // 22. Muut maksut
+    + cell(p.muut_maksut)
+    // 23. Saunamaksut
+    + cell(p.saunamaksut)
+    // 24. Kokonaisumma
+    + '<td class="text-end fw-semibold">' + (p.kokonaisumma != null ? formatEur(p.kokonaisumma) : '-') + '</td>'
+    // 25. Vuokravakuus
+    + cellEur(p.vuokravakuus)
+    // 26. Vakuuden maksupv
+    + cell(p.vakuuden_maksupv)
+    // 27. Kenen tilillä vakuus
+    + cell(p.kenen_tililla_vakuus)
+    // 28. Avaimet luovutettu
+    + cell(p.avaimet_luovutettu)
+    // 29. Avainten lkm
+    + cellC(p.avainten_lkm)
+    // 30. Avainten luovutettu lkm
+    + cellC(p.avainten_luovutettu_lkm)
+    // 31. Vesimittari luettu
+    + cell(p.vesimittari_luettu)
+    // 32. Välitys laskutettu
+    + cell(p.valitys_laskutettu)
+    // 33. Välityshinta
+    + cellEur(p.valityshinta)
+    // 34. Välitys laskutettu pvm
+    + cell(p.valitys_laskutettu_pvm)
+    // 35. Takuupalvelu
+    + cell(p.takuupalvelu)
+    // 36. Vuokratilitykset
+    + cell(p.vuokratilitykset)
+    // 37. Laskutusperuste
+    + cell(p.laskutusperuste)
+    // 38. Laskutuksen status
+    + cell(p.laskutuksen_status)
+    // 39. Vuokranantajan kontakti
+    + cell(p.vuokranantajan_kontakti)
+    // 40. Vuokranantajan sähköposti
+    + cell(p.vuokranantajan_sahkoposti)
+    // 41. Vuokranantajan puhelin
+    + cell(p.vuokranantajan_puhelin)
+    // 42. Lisätietoja
+    + '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + esc(p.lisatietoja || '') + '">' + esc(p.lisatietoja || '-') + '</td>'
+    // 43. Toiminnot — sticky right
+    + '<td class="text-center" ' + stickyAct + ' onclick="event.stopPropagation()">'
     + '<button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal(' + p.id + ')" title="Muokkaa"><i class="bi bi-pencil"></i></button>'
     + '<button class="btn btn-sm btn-outline-warning" onclick="archiveProperty(' + p.id + ')" title="Arkistoi"><i class="bi bi-archive"></i></button>'
-    + '</td></tr>'
+    + '</td>'
+    + '</tr>'
   ).join('');
 }
 
@@ -628,66 +713,4 @@ async function saveUser() {
 }
 
 async function deleteUser(id, username) {
-  if (!confirm('Poistetaanko käyttäjä "' + username + '"?')) return;
-  try {
-    const res  = await fetch('/api/users/' + id, { method: 'DELETE' });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Poisto epäonnistui');
-    showToast('Käyttäjä "' + username + '" poistettu', 'success');
-    await loadUsers();
-  } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
-}
-
-// =========================================
-// Change password
-// =========================================
-async function changePassword() {
-  const old = document.getElementById('pw-old').value;
-  const nw  = document.getElementById('pw-new').value;
-  const nw2 = document.getElementById('pw-new2').value;
-  const errEl = document.getElementById('pw-error');
-  errEl.classList.add('d-none');
-  if (nw !== nw2) { errEl.textContent = 'Salasanat eivät täsmää'; errEl.classList.remove('d-none'); return; }
-  try {
-    const res  = await fetch('/api/change-password', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ old_password: old, new_password: nw }) });
-    const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.error || 'Virhe'; errEl.classList.remove('d-none'); return; }
-    bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
-    showToast('Salasana vaihdettu!', 'success');
-  } catch (e) { errEl.textContent = 'Verkkovirhe'; errEl.classList.remove('d-none'); }
-}
-
-// =========================================
-// Helpers
-// =========================================
-function formatEur(n) {
-  if (n === null || n === undefined) return '-';
-  return new Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
-}
-
-function esc(str) {
-  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function vuokrattuBadge(v) {
-  if (!v) return '<span class="badge bg-secondary">-</span>';
-  return v.toLowerCase() === 'kyllä'
-    ? '<span class="badge badge-vuokrattu">Kyllä</span>'
-    : '<span class="badge badge-vapaa">Ei</span>';
-}
-
-function tilaBadge(v) {
-  if (!v) return '<span class="text-muted">-</span>';
-  if (v.toLowerCase() === 'ok') return '<span class="badge badge-ok">OK</span>';
-  if (v.toLowerCase().includes('selvitys')) return '<span class="badge badge-selvitys" title="' + esc(v) + '">Selvityksessä</span>';
-  return '<span class="badge bg-secondary" title="' + esc(v) + '">' + esc(v.length > 14 ? v.substring(0, 14) + '...' : v) + '</span>';
-}
-
-function showToast(msg, type) {
-  if (!type) type = 'success';
-  const toast = document.getElementById('toast');
-  const body  = document.getElementById('toast-body');
-  toast.className = 'toast align-items-center text-white border-0 bg-' + type;
-  body.textContent = msg;
-  new bootstrap.Toast(toast, { delay: 3500 }).show();
-}
+  if (!confirm('Poistetaanko käyttäjä "' + username + '"?

@@ -224,19 +224,57 @@
     </div>
     <div class="card border-0 shadow-sm">
       <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover mb-0" id="properties-table">
-            <thead class="table-light">
+        <div class="table-responsive" style="max-height:70vh;overflow:auto">
+          <table class="table table-hover table-sm mb-0" id="properties-table" style="min-width:3200px;font-size:13px">
+            <thead class="table-light sticky-top">
               <tr>
-                <th>Kohde / Osoite</th><th>Omistaja</th><th>Tyyppi</th>
-                <th class="text-center">Koko m²</th><th class="text-center">Vuokrattu</th>
-                <th>Vuokralainen</th><th class="text-end">Vuokra/kk</th>
-                <th>Asunnon tila</th><th>Vastuuhenkilö</th>
-                <th class="text-center">Toiminnot</th>
+                <th style="min-width:200px;position:sticky;left:0;z-index:3;background:#f8f9fa;border-right:2px solid #dee2e6">Kohde / Osoite</th>
+                <th style="min-width:160px">Omistaja</th>
+                <th style="min-width:150px">Tyyppi</th>
+                <th class="text-center" style="min-width:80px">Koko m²</th>
+                <th style="min-width:120px">Kaupunki</th>
+                <th style="min-width:120px">Vastuuhenkilö</th>
+                <th style="min-width:130px">Huolenpitosopimus</th>
+                <th class="text-center" style="min-width:100px">Huolenpidossa</th>
+                <th class="text-center" style="min-width:100px">Vuokrauksessa</th>
+                <th style="min-width:130px">Vuokravälittäjä</th>
+                <th class="text-center" style="min-width:90px">Vuokrattu</th>
+                <th class="text-center" style="min-width:110px">Vuokramarkkinalla</th>
+                <th style="min-width:140px">Asunnon tila</th>
+                <th style="min-width:160px">Vuokralainen</th>
+                <th style="min-width:130px">Vuokr. puhelin</th>
+                <th style="min-width:170px">Vuokr. sähköposti</th>
+                <th style="min-width:120px">Vuokras. alkaen</th>
+                <th style="min-width:120px">Vuokras. päättyy</th>
+                <th class="text-end" style="min-width:110px">Vuokra alussa</th>
+                <th class="text-end" style="min-width:110px">Vuokra tänään</th>
+                <th class="text-end" style="min-width:100px">Vesimaksut</th>
+                <th style="min-width:120px">Muut maksut</th>
+                <th style="min-width:110px">Saunamaksut</th>
+                <th class="text-end" style="min-width:110px">Kokonaisumma</th>
+                <th class="text-end" style="min-width:100px">Vuokravakuus</th>
+                <th style="min-width:120px">Vakuuden maksupv</th>
+                <th style="min-width:150px">Kenen tilillä vakuus</th>
+                <th style="min-width:130px">Avaimet luovutettu</th>
+                <th class="text-center" style="min-width:90px">Avainten lkm</th>
+                <th class="text-center" style="min-width:110px">Avaimet luov. lkm</th>
+                <th style="min-width:130px">Vesimittari luettu</th>
+                <th style="min-width:130px">Välitys laskutettu</th>
+                <th class="text-end" style="min-width:110px">Välityshinta</th>
+                <th style="min-width:140px">Välitys lask. pvm</th>
+                <th style="min-width:120px">Takuupalvelu</th>
+                <th style="min-width:130px">Vuokratilitykset</th>
+                <th style="min-width:150px">Laskutusperuste</th>
+                <th style="min-width:130px">Laskutuksen status</th>
+                <th style="min-width:150px">VRA kontakti</th>
+                <th style="min-width:170px">VRA sähköposti</th>
+                <th style="min-width:130px">VRA puhelin</th>
+                <th style="min-width:200px">Lisätietoja</th>
+                <th class="text-center" style="min-width:90px;position:sticky;right:0;z-index:3;background:#f8f9fa;border-left:2px solid #dee2e6">Toiminnot</th>
               </tr>
             </thead>
             <tbody id="properties-tbody">
-              <tr><td colspan="10" class="text-center py-4 text-muted">Ladataan...</td></tr>
+              <tr><td colspan="43" class="text-center py-4 text-muted">Ladataan...</td></tr>
             </tbody>
           </table>
         </div>
@@ -558,55 +596,4 @@
       <div class="modal-body">
         <input type="hidden" id="edit-user-id" />
         <div class="mb-3"><label class="form-label">Käyttäjätunnus <span class="text-danger">*</span></label><input type="text" class="form-control" id="u-username" /></div>
-        <div class="mb-3"><label class="form-label">Koko nimi <span class="text-danger">*</span></label><input type="text" class="form-control" id="u-fullname" /></div>
-        <div class="mb-3">
-          <label class="form-label">Salasana <span class="text-muted small" id="u-pw-hint">(jätä tyhjäksi säilyttääksesi)</span></label>
-          <input type="password" class="form-control" id="u-password" placeholder="vähintään 4 merkkiä" />
-        </div>
-        <div class="mb-3"><label class="form-label">Rooli</label>
-          <select class="form-select" id="u-role"><option value="user">Käyttäjä (user)</option><option value="admin">Ylläpitäjä (admin)</option></select></div>
-        <div class="mb-3"><label class="form-label">Tila</label>
-          <select class="form-select" id="u-active"><option value="1">Aktiivinen</option><option value="0">Ei-aktiivinen</option></select></div>
-        <div id="user-modal-error" class="alert alert-danger py-2 small d-none"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Peruuta</button>
-        <button type="button" class="btn btn-primary" onclick="saveUser()"><i class="bi bi-check-lg me-1"></i>Tallenna</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CHANGE PASSWORD MODAL -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered" style="max-width:400px">
-    <div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-key me-2"></i>Vaihda salasana</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body">
-        <div class="mb-3"><label class="form-label">Nykyinen salasana</label><input type="password" class="form-control" id="pw-old" /></div>
-        <div class="mb-3"><label class="form-label">Uusi salasana</label><input type="password" class="form-control" id="pw-new" /></div>
-        <div class="mb-3"><label class="form-label">Toista uusi salasana</label><input type="password" class="form-control" id="pw-new2" /></div>
-        <div id="pw-error" class="alert alert-danger py-2 small d-none"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Peruuta</button>
-        <button type="button" class="btn btn-primary" onclick="changePassword()">Vaihda</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
-  <div id="toast" class="toast align-items-center border-0" role="alert">
-    <div class="d-flex">
-      <div class="toast-body" id="toast-body"></div>
-      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/static/app.js"></script>
-</body>
-</html>
+        <div class="mb-3"><label class="form-label">Koko nimi <span class="text-danger">*</span></label><input type="text" class="form-control"
