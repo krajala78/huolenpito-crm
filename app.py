@@ -484,30 +484,39 @@ def update_property(prop_id):
 @login_required
 def archive_property(prop_id):
     p = placeholder()
-    conn = get_db()
-    execute_write(conn, f'UPDATE properties SET arkistoitu = 1, paivitetty = {p} WHERE id = {p}',
-                  (datetime.now().isoformat(), prop_id))
-    conn.commit(); conn.close()
-    return jsonify({'message': 'Kohde arkistoitu'})
+    try:
+        conn = get_db()
+        execute_write(conn, f'UPDATE properties SET arkistoitu = 1, paivitetty = {p} WHERE id = {p}',
+                      (datetime.now().isoformat(), prop_id))
+        conn.commit(); conn.close()
+        return jsonify({'message': 'Kohde arkistoitu'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/properties/<int:prop_id>/restore', methods=['PUT'])
 @login_required
 def restore_property(prop_id):
     p = placeholder()
-    conn = get_db()
-    execute_write(conn, f'UPDATE properties SET arkistoitu = 0, paivitetty = {p} WHERE id = {p}',
-                  (datetime.now().isoformat(), prop_id))
-    conn.commit(); conn.close()
-    return jsonify({'message': 'Kohde palautettu'})
+    try:
+        conn = get_db()
+        execute_write(conn, f'UPDATE properties SET arkistoitu = 0, paivitetty = {p} WHERE id = {p}',
+                      (datetime.now().isoformat(), prop_id))
+        conn.commit(); conn.close()
+        return jsonify({'message': 'Kohde palautettu'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/properties/<int:prop_id>', methods=['DELETE'])
 @login_required
 def delete_property(prop_id):
     p = placeholder()
-    conn = get_db()
-    execute_write(conn, f'DELETE FROM properties WHERE id = {p}', (prop_id,))
-    conn.commit(); conn.close()
-    return jsonify({'message': 'Poistettu pysyvästi'})
+    try:
+        conn = get_db()
+        execute_write(conn, f'DELETE FROM properties WHERE id = {p}', (prop_id,))
+        conn.commit(); conn.close()
+        return jsonify({'message': 'Poistettu pysyvästi'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 NUMERIC_DB_COLS = {
     'koko', 'vuokra_alussa', 'vuokra_tanaan', 'vesimaksut', 'kokonaisumma',

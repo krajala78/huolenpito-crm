@@ -726,6 +726,25 @@
   </div>
 </div>
 
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header py-2 border-0">
+        <h6 class="modal-title fw-bold" id="confirmModalTitle">Vahvistus</h6>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body py-2">
+        <p class="mb-0 small" id="confirmModalText"></p>
+      </div>
+      <div class="modal-footer py-2 border-0 gap-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Peruuta</button>
+        <button type="button" class="btn btn-sm" id="confirmModalOk">Vahvista</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
   <div id="toast" class="toast align-items-center border-0" role="alert">

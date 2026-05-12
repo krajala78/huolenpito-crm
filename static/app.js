@@ -542,37 +542,80 @@ function filterArchive() {
   ));
 }
 
+
+// =========================================
+// Confirm Modal helper
+// =========================================
+function showConfirm(title, text, okLabel, okClass, onOk) {
+  document.getElementById('confirmModalTitle').textContent = title;
+  document.getElementById('confirmModalText').textContent = text;
+  var btn = document.getElementById('confirmModalOk');
+  btn.textContent = okLabel;
+  btn.className = 'btn btn-sm ' + (okClass || 'btn-primary');
+  var modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+  var handler = function() {
+    modal.hide();
+    btn.removeEventListener('click', handler);
+    onOk();
+  };
+  btn.addEventListener('click', handler);
+  // Clean up if dismissed without clicking OK
+  document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function cleanup() {
+    btn.removeEventListener('click', handler);
+    document.getElementById('confirmModal').removeEventListener('hidden.bs.modal', cleanup);
+  });
+  modal.show();
+}
+
 async function archiveProperty(id) {
   const p = allProperties.find(x => x.id === id);
-  if (!confirm('Arkistoidaanko kohde "' + (p ? p.kohde_osoite : '') + '"?')) return;
-  try {
-    const res = await fetch('/api/properties/' + id + '/archive', { method: 'PUT' });
-    if (!res.ok) throw new Error('Arkistointi epäonnistui');
-    showToast('Kohde arkistoitu', 'success');
-    await loadProperties(); await loadArchive(); await loadStats();
-  } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+  showConfirm(
+    'Arkistoi kohde',
+    'Arkistoidaanko kohde "' + (p ? p.kohde_osoite : '') + '"? Se häviää päälistalta.',
+    'Arkistoi', 'btn-warning',
+    async function() {
+      try {
+        const res = await fetch('/api/properties/' + id + '/archive', { method: 'PUT' });
+        if (!res.ok) { const t = await res.text(); throw new Error('Arkistointi epäonnistui (' + res.status + ')'); }
+        showToast('Kohde arkistoitu', 'success');
+        await loadProperties(); await loadArchive(); await loadStats();
+      } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+    }
+  );
 }
 
 async function restoreProperty(id) {
   const p = allArchived.find(x => x.id === id);
-  if (!confirm('Palautetaanko kohde "' + (p ? p.kohde_osoite : '') + '" aktiiviseksi?')) return;
-  try {
-    const res = await fetch('/api/properties/' + id + '/restore', { method: 'PUT' });
-    if (!res.ok) throw new Error('Palautus epäonnistui');
-    showToast('Kohde palautettu', 'success');
-    await loadProperties(); await loadArchive(); await loadStats();
-  } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+  showConfirm(
+    'Palauta kohde',
+    'Palautetaanko "' + (p ? p.kohde_osoite : '') + '" takaisin aktiiviseksi?',
+    'Palauta', 'btn-success',
+    async function() {
+      try {
+        const res = await fetch('/api/properties/' + id + '/restore', { method: 'PUT' });
+        if (!res.ok) { await res.text(); throw new Error('Palautus epäonnistui (' + res.status + ')'); }
+        showToast('Kohde palautettu', 'success');
+        await loadProperties(); await loadArchive(); await loadStats();
+      } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+    }
+  );
 }
 
 async function hardDeleteProperty(id) {
   const p = allArchived.find(x => x.id === id);
-  if (!confirm('POISTETAANKO PYSYVÄSTI "' + (p ? p.kohde_osoite : '') + '"? Tätä ei voi peruuttaa.')) return;
-  try {
-    const res = await fetch('/api/properties/' + id, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Poisto epäonnistui');
-    showToast('Kohde poistettu pysyvästi', 'success');
-    await loadArchive(); await loadStats();
-  } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+  showConfirm(
+    'Poista pysyvästi',
+    'POISTETAANKO PYSYVÄSTI "' + (p ? p.kohde_osoite : '') + '"? Tätä toimintoa ei voi peruuttaa!',
+    'Poista pysyvästi', 'btn-danger',
+    async function() {
+      try {
+        const res = await fetch('/api/properties/' + id, { method: 'DELETE' });
+        if (!res.ok) { await res.text(); throw new Error('Poisto epäonnistui (' + res.status + ')'); }
+        showToast('Kohde poistettu pysyvästi', 'success');
+        await loadArchive(); await loadStats();
+      } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+    }
+  );
 }
 
 // =========================================
