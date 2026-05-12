@@ -471,6 +471,18 @@ function filterProperties() {
   if (vuokraBox) vuokraBox.classList.toggle('d-flex', currentUser?.role === 'admin');
 }
 
+function recalcKokonaisumma() {
+  var vuokra = parseFloat(document.getElementById('f-vuokra_tanaan')?.value) || 0;
+  var vesi   = parseFloat(document.getElementById('f-vesimaksut')?.value) || 0;
+  var muut_raw = (document.getElementById('f-muut_maksut')?.value || '').trim();
+  var sauna_raw = (document.getElementById('f-saunamaksut')?.value || '').trim();
+  var muut  = parseFloat(muut_raw) || 0;
+  var sauna = parseFloat(sauna_raw) || 0;
+  var total = vuokra + vesi + muut + sauna;
+  var el = document.getElementById('f-kokonaisumma');
+  if (el) el.value = total > 0 ? total.toFixed(2) : '';
+}
+
 function clearFilters() {
   const si = document.getElementById('search-input');
   const fv = document.getElementById('filter-vuokrattu');

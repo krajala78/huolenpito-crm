@@ -587,11 +587,11 @@
             <h6 class="form-section-title"><i class="bi bi-currency-euro me-2 text-primary"></i>Maksutiedot</h6>
             <div class="row g-3">
               <div class="col-6 col-md-2"><label class="form-label">Vuokra sop. alussa (€)</label><input type="number" class="form-control" id="f-vuokra_alussa" step="0.01" min="0"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Vuokra tänään (€)</label><input type="number" class="form-control" id="f-vuokra_tanaan" step="0.01" min="0"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Vesimaksut (€)</label><input type="number" class="form-control" id="f-vesimaksut" step="0.01" min="0"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Muut maksut</label><input type="text" class="form-control" id="f-muut_maksut" placeholder="€ tai Ei"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Saunamaksut</label><input type="text" class="form-control" id="f-saunamaksut" placeholder="€ tai Ei"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Kokonaissumma (€)</label><input type="number" class="form-control" id="f-kokonaisumma" step="0.01" min="0"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Vuokra tänään (€)</label><input type="number" class="form-control" id="f-vuokra_tanaan" step="0.01" min="0" oninput="recalcKokonaisumma()"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Vesimaksut (€)</label><input type="number" class="form-control" id="f-vesimaksut" step="0.01" min="0" oninput="recalcKokonaisumma()"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Muut maksut</label><input type="text" class="form-control" id="f-muut_maksut" placeholder="€ tai Ei" oninput="recalcKokonaisumma()"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Saunamaksut</label><input type="text" class="form-control" id="f-saunamaksut" placeholder="€ tai Ei" oninput="recalcKokonaisumma()"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Kokonaissumma (€)</label><input type="number" class="form-control" id="f-kokonaisumma" step="0.01" min="0" readonly tabindex="-1" style="background:#f1f3f5;color:#6c757d;cursor:default"></div>
             </div>
           </div>
           <div class="form-section mb-4">
