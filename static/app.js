@@ -123,6 +123,11 @@ async function loadStats() {
     document.getElementById('stat-vuokramarkkinalla').textContent = d.vuokramarkkinalla ?? '-';
     const huolEl = document.getElementById('stat-huolenpidossa');
     if (huolEl) huolEl.textContent = d.huolenpidossa ?? '-';
+    const laskEl = document.getElementById('stat-laskutus');
+    if (laskEl) laskEl.textContent = formatEur(d.laskutus_sum);
+    // Näytä admin-kortit vain adminille
+    const isAdmin = currentUser?.role === 'admin';
+    document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('d-none', !isAdmin));
     renderVastuuhenkiloStats(d.per_vastuuhenkilo || []);
     renderTilaStats(d.per_tila || []);
   } catch (e) { console.error('Stats error:', e); }

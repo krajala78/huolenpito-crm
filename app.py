@@ -377,11 +377,20 @@ def stats():
     per_tila = execute_query(conn,
         "SELECT COALESCE(asunnon_tila, 'Ei tietoa') as asunnon_tila, COUNT(*) as count "
         "FROM properties WHERE arkistoitu = 0 GROUP BY asunnon_tila ORDER BY count DESC")
+    if DATABASE_URL:
+        laskutus_sql = ("SELECT SUM(CASE WHEN laskutusperuste ~ '^-?[0-9]+\.?[0-9]*$' "
+                        "THEN laskutusperuste::FLOAT8 ELSE 0 END) "
+                        "FROM properties WHERE arkistoitu = 0")
+    else:
+        laskutus_sql = ("SELECT SUM(CAST(laskutusperuste AS REAL)) "
+                        "FROM properties WHERE laskutusperuste IS NOT NULL AND arkistoitu = 0")
+    laskutus_sum = execute_scalar(conn, laskutus_sql) or 0
     conn.close()
     return jsonify({
         'total': total, 'vuokrattu': vuokrattu, 'vapaat': vapaat,
         'vuokramarkkinalla': vuokramarkkinalla or 0,
         'vuokra_sum': round(float(vuokra_sum), 2),
+        'laskutus_sum': round(float(laskutus_sum), 2),
         'huolenpidossa': huolenpidossa or 0,
         'per_vastuuhenkilo': per_vastuuhenkilo,
         'per_tila': per_tila,
