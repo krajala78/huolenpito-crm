@@ -179,7 +179,29 @@
   <!-- KOHTEET TAB -->
   <div id="tab-kohteet" class="d-none">
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-      <h4 class="mb-0 text-muted me-auto"><i class="bi bi-building me-2"></i>Kohteet</h4>
+      <h4 class="mb-0 text-muted"><i class="bi bi-building me-2"></i>Kohteet</h4>
+      <div class="d-flex flex-wrap gap-2 align-items-center me-auto ms-3" id="kohteet-stats-chips">
+        <div class="d-flex align-items-center gap-1 px-3 py-1 rounded-3 border bg-white" style="font-size:13px">
+          <i class="bi bi-building text-primary"></i>
+          <span class="text-muted">Yht:</span>
+          <span class="fw-bold text-primary" id="ks-total">–</span>
+        </div>
+        <div class="d-flex align-items-center gap-1 px-3 py-1 rounded-3 border bg-white" style="font-size:13px">
+          <i class="bi bi-person-check text-success"></i>
+          <span class="text-muted">Vuokrattu:</span>
+          <span class="fw-bold text-success" id="ks-vuokrattu">–</span>
+        </div>
+        <div class="d-flex align-items-center gap-1 px-3 py-1 rounded-3 border bg-white" style="font-size:13px">
+          <i class="bi bi-door-open text-warning"></i>
+          <span class="text-muted">Vapaat:</span>
+          <span class="fw-bold text-warning" id="ks-vapaat">–</span>
+        </div>
+        <div class="d-flex align-items-center gap-1 px-3 py-1 rounded-3 border bg-white" style="font-size:13px">
+          <i class="bi bi-megaphone" style="color:#6f42c1"></i>
+          <span class="text-muted">Vuokralla:</span>
+          <span class="fw-bold" style="color:#6f42c1" id="ks-markkinalla">–</span>
+        </div>
+      </div>
       <div class="admin-only d-none align-items-center gap-2 px-3 py-1 rounded-3 border border-info-subtle bg-info-subtle" id="vuokratulot-kohteet-box" style="font-size:14px">
         <i class="bi bi-cash-stack text-info"></i>
         <span class="text-muted">Vuokratulot/kk:</span>
@@ -243,33 +265,7 @@
         </div>
       </div>
     </div>
-    <!-- Kohteet-sivun tilastolaatikot (päivittyy filtteröinnin mukaan) -->
-    <div class="row g-2 mb-2" id="kohteet-stats-row">
-      <div class="col-6 col-sm-3">
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-sm">
-          <div class="rounded-2 p-2" style="background:rgba(13,110,253,.1)"><i class="bi bi-building text-primary"></i></div>
-          <div><div class="text-muted" style="font-size:11px">Kohteet yhteensä</div><div class="fw-bold fs-5 text-primary" id="ks-total">–</div></div>
-        </div>
-      </div>
-      <div class="col-6 col-sm-3">
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-sm">
-          <div class="rounded-2 p-2" style="background:rgba(25,135,84,.1)"><i class="bi bi-person-check text-success"></i></div>
-          <div><div class="text-muted" style="font-size:11px">Vuokrattu</div><div class="fw-bold fs-5 text-success" id="ks-vuokrattu">–</div></div>
-        </div>
-      </div>
-      <div class="col-6 col-sm-3">
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-sm">
-          <div class="rounded-2 p-2" style="background:rgba(255,193,7,.15)"><i class="bi bi-door-open text-warning"></i></div>
-          <div><div class="text-muted" style="font-size:11px">Vapaat</div><div class="fw-bold fs-5 text-warning" id="ks-vapaat">–</div></div>
-        </div>
-      </div>
-      <div class="col-6 col-sm-3">
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-sm">
-          <div class="rounded-2 p-2" style="background:rgba(111,66,193,.1)"><i class="bi bi-megaphone" style="color:#6f42c1"></i></div>
-          <div><div class="text-muted" style="font-size:11px">Vuokralla</div><div class="fw-bold fs-5" style="color:#6f42c1" id="ks-markkinalla">–</div></div>
-        </div>
-      </div>
-    </div>
+
     <div class="card border-0 shadow-sm">
       <div class="card-body p-0">
         <!-- Mobiilikorttinäkymä (< md) -->
