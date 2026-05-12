@@ -7,6 +7,7 @@ let editingId     = null;
 let viewingId     = null;
 let currentUser   = null;
 let selectedKaupungit = [];
+let colFilters = {};
 
 // =========================================
 // Init
@@ -328,6 +329,56 @@ function clearKaupunkiFilter() {
   updateKaupunkiLabel(); filterProperties();
 }
 
+// =========================================
+// Column filters
+// =========================================
+function toggleColFilters() {
+  var row = document.getElementById('col-filter-row');
+  var btn = document.getElementById('col-filter-toggle-btn');
+  if (!row) return;
+  var hidden = row.classList.contains('d-none');
+  row.classList.toggle('d-none', !hidden);
+  if (btn) {
+    btn.classList.toggle('btn-outline-secondary', !hidden);
+    btn.classList.toggle('btn-secondary', hidden);
+  }
+  if (!hidden) {
+    // Clearing filters when hiding
+    clearColFilters();
+  }
+}
+
+function applyColFilter(input) {
+  var col = input.getAttribute('data-col');
+  var val = input.value.trim().toLowerCase();
+  if (val) {
+    colFilters[col] = val;
+  } else {
+    delete colFilters[col];
+  }
+  filterProperties();
+}
+
+function clearColFilters() {
+  colFilters = {};
+  var inputs = document.querySelectorAll('#col-filter-row input[data-col]');
+  inputs.forEach(function(inp) { inp.value = ''; });
+  filterProperties();
+}
+
+function applyColFiltersToList(props) {
+  var keys = Object.keys(colFilters);
+  if (keys.length === 0) return props;
+  return props.filter(function(p) {
+    return keys.every(function(col) {
+      var val = colFilters[col];
+      var pval = (p[col] != null ? String(p[col]) : '').toLowerCase();
+      return pval.includes(val);
+    });
+  });
+}
+
+
 function filterProperties() {
   const search    = (document.getElementById('search-input')?.value || '').toLowerCase();
   const vuokrattu = document.getElementById('filter-vuokrattu')?.value || '';
@@ -341,7 +392,8 @@ function filterProperties() {
     const mh = !vastuu || p.vastuuhenkilo === vastuu;
     return ms && mv && mk && mh;
   });
-  renderTable(filtered);
+  var colFiltered = applyColFiltersToList(filtered);
+  renderTable(colFiltered);
 }
 
 function clearFilters() {

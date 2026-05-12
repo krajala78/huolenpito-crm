@@ -167,6 +167,9 @@
   <div id="tab-kohteet" class="d-none">
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
       <h4 class="mb-0 text-muted me-auto"><i class="bi bi-building me-2"></i>Kohteet</h4>
+      <button class="btn btn-outline-secondary btn-sm" id="col-filter-toggle-btn" onclick="toggleColFilters()" title="Näytä/piilota sarakesuodattimet">
+        <i class="bi bi-funnel me-1"></i>Sarakesuodattimet
+      </button>
       <button class="btn btn-outline-success" onclick="exportExcel()">
         <i class="bi bi-file-earmark-excel me-1"></i>Vie Excel
       </button>
@@ -271,6 +274,51 @@
                 <th style="min-width:130px">VRA puhelin</th>
                 <th style="min-width:200px">Lisätietoja</th>
                 <th class="text-center" style="min-width:90px;position:sticky;right:0;z-index:3;background:#f8f9fa;border-left:2px solid #dee2e6">Toiminnot</th>
+              </tr>
+              <tr id="col-filter-row" class="d-none">
+                <th style="position:sticky;left:0;z-index:3;background:#f0f4ff;border-right:2px solid #dee2e6;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="Hae..." data-col="kohde_osoite" oninput="applyColFilter(this)" style="min-width:160px;font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="omistaja" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="tyyppi" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="koko" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="kaupunki" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vastuuhenkilo" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="huolenpitosopimus" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="huolenpidossa" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokrauksessa" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokravalittaja" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokrattu" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokramarkkinalla" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="asunnon_tila" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokralaisen_nimi" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokralaisen_puhelin" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokralaisen_sahkoposti" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokrasopimus_alkaen" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokrasopimus_paattyy" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokra_alussa" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokra_tanaan" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vesimaksut" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="muut_maksut" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="saunamaksut" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="kokonaisumma" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokravakuus" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vakuuden_maksupv" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="kenen_tililla_vakuus" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="avaimet_luovutettu" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="avainten_lkm" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="avainten_luovutettu_lkm" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vesimittari_luettu" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="valitys_laskutettu" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="valityshinta" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="valitys_laskutettu_pvm" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="takuupalvelu" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokratilitykset" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="laskutusperuste" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="laskutuksen_status" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokranantajan_kontakti" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokranantajan_sahkoposti" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="vuokranantajan_puhelin" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="background:#f0f4ff;padding:4px"><input type="text" class="form-control form-control-sm" placeholder="..." data-col="lisatietoja" oninput="applyColFilter(this)" style="font-size:12px"></th>
+                <th style="position:sticky;right:0;z-index:3;background:#f0f4ff;border-left:2px solid #dee2e6;padding:4px"><button class="btn btn-outline-secondary btn-sm w-100" onclick="clearColFilters()" title="Tyhjennä sarakesuodattimet" style="font-size:11px"><i class="bi bi-x-circle"></i></button></th>
               </tr>
             </thead>
             <tbody id="properties-tbody">
