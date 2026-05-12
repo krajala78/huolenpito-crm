@@ -375,7 +375,7 @@ def stats():
         "FROM properties WHERE vastuuhenkilo IS NOT NULL AND vastuuhenkilo != '' AND arkistoitu = 0 "
         "GROUP BY vastuuhenkilo ORDER BY total DESC")
     per_tila = execute_query(conn,
-        "SELECT COALESCE(asunnon_tila, 'Ei tietoa') as tila, COUNT(*) as count "
+        "SELECT COALESCE(asunnon_tila, 'Ei tietoa') as asunnon_tila, COUNT(*) as count "
         "FROM properties WHERE arkistoitu = 0 GROUP BY asunnon_tila ORDER BY count DESC")
     conn.close()
     return jsonify({
