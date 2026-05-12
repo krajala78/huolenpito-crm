@@ -469,6 +469,15 @@ function filterProperties() {
   var vuokraBox = document.getElementById('vuokratulot-kohteet-box');
   if (vuokraBox) vuokraBox.classList.toggle('d-none', !(currentUser?.role === 'admin'));
   if (vuokraBox) vuokraBox.classList.toggle('d-flex', currentUser?.role === 'admin');
+  // Päivitä tilastolaatikot filtteröidyn listan mukaan
+  var ksTotal      = colFiltered.length;
+  var ksVuokrattu  = colFiltered.filter(function(p){ return (p.vuokrattu||'').toLowerCase() === 'kyllä'; }).length;
+  var ksVapaat     = ksTotal - ksVuokrattu;
+  var ksMarkkinalla = colFiltered.filter(function(p){ return (p.vuokramarkkinalla||'').toLowerCase() === 'kyllä'; }).length;
+  var el = document.getElementById('ks-total');      if (el) el.textContent = ksTotal;
+  el = document.getElementById('ks-vuokrattu');      if (el) el.textContent = ksVuokrattu;
+  el = document.getElementById('ks-vapaat');         if (el) el.textContent = ksVapaat;
+  el = document.getElementById('ks-markkinalla');    if (el) el.textContent = ksMarkkinalla;
 }
 
 function recalcKokonaisumma() {
