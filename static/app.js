@@ -165,6 +165,7 @@ async function loadProperties() {
     if (res.status === 401) { showLoginOverlay(); return; }
     allProperties = await res.json();
     renderTable(allProperties);
+    populateColFilterSelects(allProperties);
   } catch (e) { showToast('Kohteiden lataus epäonnistui', 'danger'); }
 }
 
@@ -361,9 +362,33 @@ function applyColFilter(input) {
 
 function clearColFilters() {
   colFilters = {};
-  var inputs = document.querySelectorAll('#col-filter-row input[data-col]');
+  var inputs = document.querySelectorAll('#col-filter-row [data-col]');
   inputs.forEach(function(inp) { inp.value = ''; });
   filterProperties();
+}
+
+function populateColFilterSelects(props) {
+  var selects = document.querySelectorAll('#col-filter-row select[data-col]');
+  selects.forEach(function(sel) {
+    var col = sel.getAttribute('data-col');
+    var current = sel.value;
+    var seen = {};
+    props.forEach(function(p) {
+      var v = p[col];
+      if (v != null && v !== '') seen[String(v)] = true;
+    });
+    var sorted = Object.keys(seen).sort(function(a, b) {
+      return a.localeCompare(b, 'fi');
+    });
+    sel.innerHTML = '<option value="">Kaikki</option>';
+    sorted.forEach(function(v) {
+      var opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      if (v === current) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  });
 }
 
 function applyColFiltersToList(props) {
@@ -372,8 +397,8 @@ function applyColFiltersToList(props) {
   return props.filter(function(p) {
     return keys.every(function(col) {
       var val = colFilters[col];
-      var pval = (p[col] != null ? String(p[col]) : '').toLowerCase();
-      return pval.includes(val);
+      var pval = (p[col] != null ? String(p[col]) : '');
+      return pval.toLowerCase().includes(val.toLowerCase());
     });
   });
 }
