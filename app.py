@@ -500,6 +500,27 @@ def delete_property(prop_id):
     conn.commit(); conn.close()
     return jsonify({'message': 'Poistettu pysyvästi'})
 
+NUMERIC_DB_COLS = {
+    'koko', 'vuokra_alussa', 'vuokra_tanaan', 'vesimaksut', 'kokonaisumma',
+    'vuokravakuus', 'valityshinta', 'avainten_lkm', 'avainten_luovutettu_lkm',
+}
+
+def safe_num(val):
+    """Convert a value to float/int safely. Returns None if not parseable."""
+    if val is None: return None
+    if isinstance(val, bool): return None
+    if isinstance(val, (int, float)):
+        import math
+        return None if math.isnan(val) else val
+    s = str(val).strip()
+    if not s or s.startswith('='): return None   # skip Excel formulas
+    # Replace Finnish comma decimal, strip currency symbols and extra text
+    s = s.replace(',', '.').replace('€', '').replace(' ', '')
+    # Take only the leading numeric part
+    import re
+    m = re.match(r'^-?[\d]+(?:\.[\d]+)?', s)
+    return float(m.group()) if m else None
+
 @app.route('/api/import', methods=['POST'])
 @login_required
 def import_excel():
@@ -510,28 +531,52 @@ def import_excel():
         df = pd.read_excel(io.BytesIO(file.read()))
     except Exception as e:
         return jsonify({'error': f'Tiedoston luku epäonnistui: {str(e)}'}), 400
-    conn = get_db(); count = 0; errors = []
+
+    count = 0; errors = []
+
     for idx, row in df.iterrows():
+        conn = get_db()
         try:
             data = {}
             for excel_col, db_col in EXCEL_TO_DB.items():
-                if excel_col in df.columns:
-                    val = row[excel_col]
-                    if pd.isna(val): data[db_col] = None
-                    elif hasattr(val, 'strftime'): data[db_col] = val.strftime('%Y-%m-%d')
-                    elif isinstance(val, (int, float)): data[db_col] = val
-                    else: data[db_col] = str(val).strip()
-            data['luotu'] = datetime.now().isoformat()
+                if excel_col not in df.columns:
+                    continue
+                val = row[excel_col]
+                # NaN / None
+                try:
+                    is_na = pd.isna(val)
+                except (TypeError, ValueError):
+                    is_na = False
+                if is_na:
+                    data[db_col] = None
+                elif hasattr(val, 'strftime'):
+                    data[db_col] = val.strftime('%Y-%m-%d')
+                elif db_col in NUMERIC_DB_COLS:
+                    data[db_col] = safe_num(val)
+                elif isinstance(val, (int, float)):
+                    data[db_col] = val
+                else:
+                    s = str(val).strip()
+                    data[db_col] = s if s else None
+
+            data['luotu']      = datetime.now().isoformat()
             data['paivitetty'] = datetime.now().isoformat()
             data['arkistoitu'] = 0
-            cols = list(data.keys()); values = [data[k] for k in cols]
+
+            cols    = list(data.keys())
+            values  = [data[k] for k in cols]
             col_str = ', '.join(cols)
-            phs = ', '.join(['%s' if USE_PG else '?'] * len(cols))
+            phs     = ', '.join(['%s' if USE_PG else '?'] * len(cols))
             execute_write(conn, f'INSERT INTO properties ({col_str}) VALUES ({phs})', values)
+            conn.commit()
             count += 1
         except Exception as e:
-            errors.append(f'Rivi {idx + 2}: {str(e)}')
-    conn.commit(); conn.close()
+            try: conn.rollback()
+            except: pass
+            errors.append(f'Rivi {idx + 2}: {str(e).split(chr(10))[0]}')
+        finally:
+            conn.close()
+
     result = {'message': f'Tuotu {count} kohdetta', 'count': count}
     if errors: result['errors'] = errors
     return jsonify(result)
@@ -642,34 +687,4 @@ def tilitysraportti():
     # Column widths
     widths = {1:35, 2:25, 3:30, 4:10, 5:10, 6:12, 7:16, 8:14, 9:22}
     for col, w in widths.items():
-        ws.column_dimensions[get_column_letter(col)].width = w
-    ws.freeze_panes = 'A2'
-
-    # ── Yhteenveto sheet ──
-    ws2 = wb.create_sheet(f'Yhteenveto {vuosi}')
-    ws2.cell(1,1,f'Vuokratilitysyhteenveto {vuosi}').font = Font(bold=True, size=13)
-    ws2.cell(3,1,'Kuukausi').font = Font(bold=True)
-    ws2.cell(3,2,'Vuokratilitys').font = Font(bold=True)
-    ws2.cell(3,3,'Muut tilitykset').font = Font(bold=True)
-    ws2.cell(3,4,'Muut huomiot').font = Font(bold=True)
-    ws2.cell(4+kuukausi-1, 1, kuukausi_nimi)
-    ws2.cell(4+kuukausi-1, 2, round(totals[4], 2)).number_format = '#,##0.00'
-    ws2.cell(4+kuukausi-1, 3, round(totals[5]+totals[6], 2)).number_format = '#,##0.00'
-    ws2.column_dimensions['A'].width = 15
-    ws2.column_dimensions['B'].width = 16
-    ws2.column_dimensions['C'].width = 16
-
-    # Logo / website note
-    ws2.cell(12, 5, 'www.valuelkv.fi').font = Font(color='888888', italic=True)
-
-    output = io.BytesIO()
-    wb.save(output); output.seek(0)
-    filename = f'tilitysraportti_{vuosi}_{kuukausi:02d}.xlsx'
-    return send_file(output,
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        as_attachment=True, download_name=filename)
-
-if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')
+        ws.column_dimensions[get_
