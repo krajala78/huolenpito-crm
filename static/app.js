@@ -119,7 +119,6 @@ async function loadStats() {
     document.getElementById('stat-total').textContent             = d.total ?? '-';
     document.getElementById('stat-vuokrattu').textContent         = d.vuokrattu ?? '-';
     document.getElementById('stat-vapaat').textContent            = d.vapaat ?? '-';
-    document.getElementById('stat-vuokra').textContent            = formatEur(d.vuokra_sum);
     document.getElementById('stat-vuokramarkkinalla').textContent = d.vuokramarkkinalla ?? '-';
     const huolEl = document.getElementById('stat-huolenpidossa');
     if (huolEl) huolEl.textContent = d.huolenpidossa ?? '-';
@@ -463,6 +462,13 @@ function filterProperties() {
   });
   var colFiltered = applyColFiltersToList(filtered);
   renderTable(colFiltered);
+  // Päivitä Vuokratulot/kk (admin-only) filtteröidyn listan mukaan
+  var vuokraSum = colFiltered.reduce(function(s, p) { return s + (parseFloat(p.kokonaisumma) || 0); }, 0);
+  var vuokraEl = document.getElementById('stat-vuokra');
+  if (vuokraEl) vuokraEl.textContent = formatEur(vuokraSum);
+  var vuokraBox = document.getElementById('vuokratulot-kohteet-box');
+  if (vuokraBox) vuokraBox.classList.toggle('d-none', !(currentUser?.role === 'admin'));
+  if (vuokraBox) vuokraBox.classList.toggle('d-flex', currentUser?.role === 'admin');
 }
 
 function clearFilters() {

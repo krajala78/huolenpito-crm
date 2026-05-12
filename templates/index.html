@@ -127,14 +127,6 @@
           </div>
         </div>
       </div>
-      <div class="col-6 col-xl-3 admin-only d-none" id="card-vuokratulot">
-        <div class="card stat-card border-0 shadow-sm h-100">
-          <div class="card-body d-flex align-items-center gap-3">
-            <div class="stat-icon bg-info-light text-info rounded-3 p-3"><i class="bi bi-cash-stack fs-3"></i></div>
-            <div><div class="text-muted small">Vuokratulot/kk</div><div class="fs-2 fw-bold text-info" id="stat-vuokra">–</div></div>
-          </div>
-        </div>
-      </div>
       <div class="col-6 col-xl-3" id="card-laskutus">
         <div class="card stat-card border-0 shadow-sm h-100">
           <div class="card-body d-flex align-items-center gap-3">
@@ -183,6 +175,11 @@
   <div id="tab-kohteet" class="d-none">
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
       <h4 class="mb-0 text-muted me-auto"><i class="bi bi-building me-2"></i>Kohteet</h4>
+      <div class="admin-only d-none align-items-center gap-2 px-3 py-1 rounded-3 border border-info-subtle bg-info-subtle" id="vuokratulot-kohteet-box" style="font-size:14px">
+        <i class="bi bi-cash-stack text-info"></i>
+        <span class="text-muted">Vuokratulot/kk:</span>
+        <span class="fw-bold text-info" id="stat-vuokra">–</span>
+      </div>
       <button class="btn btn-outline-secondary btn-sm d-none d-md-inline-flex" id="col-filter-toggle-btn" onclick="toggleColFilters()" title="Näytä/piilota sarakesuodattimet">
         <i class="bi bi-funnel me-1"></i>Sarakesuodattimet
       </button>
