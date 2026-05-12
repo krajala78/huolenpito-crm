@@ -215,7 +215,7 @@ function renderTable(props) {
     + cell(p.vuokravalittaja)
     // 11. Vuokrattu
     + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
-    // 12. Vuokramarkkinalla
+    // 12. Vuokralla
     + cellC(p.vuokramarkkinalla)
     // 13. Asunnon tila
     + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
@@ -624,7 +624,7 @@ function viewProperty(id) {
       ['Laskutuksen status',p.laskutuksen_status],['Vuokratilitykset',p.vuokratilitykset]]},
     { title: 'Vuokrasopimus', icon: 'bi-calendar-range', fields: [
       ['Alkaa',p.vuokrasopimus_alkaen],['Paattyy',p.vuokrasopimus_paattyy],
-      ['Vuokrattu',p.vuokrattu],['Vuokramarkkinalla',p.vuokramarkkinalla]]},
+      ['Vuokrattu',p.vuokrattu],['Vuokralla',p.vuokramarkkinalla]]},
     { title: 'Vuokralaistiedot', icon: 'bi-people', fields: [
       ['Nimi',p.vuokralaisen_nimi],['Puhelin',p.vuokralaisen_puhelin],
       ['Sahkoposti',p.vuokralaisen_sahkoposti]]},
