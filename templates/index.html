@@ -27,6 +27,14 @@
     .progress { height:8px; }
     .metric-label { font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px; }
     .tilitys-card { border:1px solid #dee2e6;border-radius:12px;padding:24px; }
+    .prop-card { border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s; }
+    .prop-card:active { box-shadow:0 2px 8px rgba(0,0,0,.13); }
+    .prop-card .pc-addr { font-weight:700;font-size:15px;color:#1a202c;line-height:1.2; }
+    .prop-card .pc-sub  { font-size:12px;color:#718096;margin-top:1px; }
+    .prop-card .pc-badge { font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600; }
+    .prop-card .pc-row  { display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px; }
+    .prop-card .pc-label{ color:#718096;font-size:11px;text-transform:uppercase;letter-spacing:.3px;font-weight:600; }
+    .prop-card .pc-actions { display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid #f0f4f8; }
   </style>
 </head>
 <body>
@@ -167,7 +175,7 @@
   <div id="tab-kohteet" class="d-none">
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
       <h4 class="mb-0 text-muted me-auto"><i class="bi bi-building me-2"></i>Kohteet</h4>
-      <button class="btn btn-outline-secondary btn-sm" id="col-filter-toggle-btn" onclick="toggleColFilters()" title="Näytä/piilota sarakesuodattimet">
+      <button class="btn btn-outline-secondary btn-sm d-none d-md-inline-flex" id="col-filter-toggle-btn" onclick="toggleColFilters()" title="Näytä/piilota sarakesuodattimet">
         <i class="bi bi-funnel me-1"></i>Sarakesuodattimet
       </button>
       <button class="btn btn-outline-success" onclick="exportExcel()">
@@ -227,7 +235,10 @@
     </div>
     <div class="card border-0 shadow-sm">
       <div class="card-body p-0">
-        <div class="table-responsive" style="max-height:70vh;overflow:auto">
+        <!-- Mobiilikorttinäkymä (< md) -->
+        <div id="properties-cards" class="d-md-none p-2 gap-2 flex-column"></div>
+        <!-- Pöytäkonenäkymä (>= md) -->
+        <div class="table-responsive d-none d-md-block" style="max-height:75vh;overflow:auto">
           <table class="table table-hover table-sm mb-0" id="properties-table" style="min-width:3200px;font-size:13px">
             <thead class="table-light sticky-top">
               <tr>

@@ -280,7 +280,46 @@ function renderTable(props) {
     + '</td>'
     + '</tr>'
   ).join('');
+  renderCards(props);
 }
+
+// =========================================
+// Mobile card view
+// =========================================
+function renderCards(props) {
+  var el = document.getElementById('properties-cards');
+  if (!el) return;
+  if (!props.length) {
+    el.innerHTML = '<div class="text-center text-muted py-5">Ei kohteita.</div>';
+    return;
+  }
+  el.innerHTML = props.map(function(p) {
+    var vuokraBadge = p.vuokrattu && p.vuokrattu.toLowerCase() === 'kyllä'
+      ? '<span class="pc-badge" style="background:#d1fae5;color:#065f46">Vuokrattu</span>'
+      : p.vuokrattu && p.vuokrattu.toLowerCase().startsWith('neuvottelu')
+        ? '<span class="pc-badge" style="background:#fef3c7;color:#92400e">Neuvottelussa</span>'
+        : '<span class="pc-badge" style="background:#fee2e2;color:#991b1b">Ei vuokrattu</span>';
+    var tila = p.asunnon_tila ? '<span class="badge bg-secondary ms-1" style="font-size:11px">' + esc(p.asunnon_tila) + '</span>' : '';
+    var rent = p.kokonaisumma ? '<span class="fw-bold text-primary">' + formatEur(p.kokonaisumma) + '/kk</span>'
+             : p.vuokra_tanaan ? '<span class="fw-bold text-primary">' + formatEur(p.vuokra_tanaan) + '/kk</span>' : '-';
+    return '<div class="prop-card" onclick="viewProperty(' + p.id + ')">'
+      + '<div class="pc-addr">' + esc(p.kohde_osoite || '-') + '</div>'
+      + '<div class="pc-sub">' + esc(p.kaupunki || '') + (p.postinumero ? ' ' + esc(p.postinumero) : '') + (p.tyyppi ? ' &bull; ' + esc(p.tyyppi) : '') + (p.koko ? ' &bull; ' + p.koko + ' m²' : '') + '</div>'
+      + '<div class="pc-row">'
+      +   '<div>' + vuokraBadge + tila + '</div>'
+      +   '<div>' + rent + '</div>'
+      + '</div>'
+      + (p.vuokralaisen_nimi ? '<div class="pc-row"><span class="pc-label">Vuokralainen</span><span>' + esc(p.vuokralaisen_nimi) + '</span></div>' : '')
+      + '<div class="pc-row"><span class="pc-label">Omistaja</span><span>' + esc(p.omistaja || '-') + '</span></div>'
+      + '<div class="pc-row"><span class="pc-label">Vastuuhenkilö</span><span>' + esc(p.vastuuhenkilo || '-') + '</span></div>'
+      + '<div class="pc-actions" onclick="event.stopPropagation()">'
+      +   '<button class="btn btn-sm btn-outline-primary flex-fill" onclick="openEditModal(' + p.id + ')"><i class="bi bi-pencil me-1"></i>Muokkaa</button>'
+      +   '<button class="btn btn-sm btn-outline-warning flex-fill" onclick="archiveProperty(' + p.id + ')"><i class="bi bi-archive me-1"></i>Arkistoi</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
 
 // =========================================
 // Filters
