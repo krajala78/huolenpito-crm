@@ -27,6 +27,11 @@
     .progress { height:8px; }
     .metric-label { font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px; }
     .tilitys-card { border:1px solid #dee2e6;border-radius:12px;padding:24px; }
+    /* Kohteet-välilehti: kiinnitetty korkeus → ei sivutason vieritystä */
+    #tab-kohteet { display:flex; flex-direction:column; height:calc(100vh - 92px); overflow:hidden; }
+    #tab-kohteet .card.border-0.shadow-sm:last-child { flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column; }
+    #tab-kohteet .card.border-0.shadow-sm:last-child .card-body { flex:1; min-height:0; overflow:hidden; padding:0; }
+    #tab-kohteet .table-responsive.d-none.d-md-block { height:100% !important; max-height:none !important; }
     .prop-card { border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s; }
     .prop-card:active { box-shadow:0 2px 8px rgba(0,0,0,.13); }
     .prop-card .pc-addr { font-weight:700;font-size:15px;color:#1a202c;line-height:1.2; }
