@@ -687,4 +687,34 @@ def tilitysraportti():
     # Column widths
     widths = {1:35, 2:25, 3:30, 4:10, 5:10, 6:12, 7:16, 8:14, 9:22}
     for col, w in widths.items():
-        ws.column_dimensions[get_
+        ws.column_dimensions[get_column_letter(col)].width = w
+    ws.freeze_panes = 'A2'
+
+    # Yhteenveto sheet
+    ws2 = wb.create_sheet('Yhteenveto ' + str(vuosi))
+    ws2.cell(1,1,'Vuokratilitysyhteenveto ' + str(vuosi)).font = Font(bold=True, size=13)
+    ws2.cell(3,1,'Kuukausi').font = Font(bold=True)
+    ws2.cell(3,2,'Vuokratilitys').font = Font(bold=True)
+    ws2.cell(3,3,'Muut tilitykset').font = Font(bold=True)
+    ws2.cell(3,4,'Muut huomiot').font = Font(bold=True)
+    ws2.cell(4+kuukausi-1, 1, kuukausi_nimi)
+    ws2.cell(4+kuukausi-1, 2, round(totals[4], 2)).number_format = '#,##0.00'
+    ws2.cell(4+kuukausi-1, 3, round(totals[5]+totals[6], 2)).number_format = '#,##0.00'
+    ws2.column_dimensions['A'].width = 15
+    ws2.column_dimensions['B'].width = 16
+    ws2.column_dimensions['C'].width = 16
+
+    # Logo / website note
+    ws2.cell(12, 5, 'www.valuelkv.fi').font = Font(color='888888', italic=True)
+
+    output = io.BytesIO()
+    wb.save(output); output.seek(0)
+    filename = 'tilitysraportti_' + str(vuosi) + '_' + str(kuukausi).zfill(2) + '.xlsx'
+    return send_file(output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True, download_name=filename)
+
+if __name__ == '__main__':
+    init_db()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')
