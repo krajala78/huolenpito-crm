@@ -713,4 +713,66 @@ async function saveUser() {
 }
 
 async function deleteUser(id, username) {
-  if (!confirm('Poistetaanko käyttäjä "' + username + '"?
+  if (!confirm('Poistetaanko käyttäjä "' + username + '"?')) return;
+  try {
+    const res  = await fetch('/api/users/' + id, { method: 'DELETE' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Poisto epäonnistui');
+    showToast('Käyttäjä "' + username + '" poistettu', 'success');
+    await loadUsers();
+  } catch (e) { showToast('Virhe: ' + e.message, 'danger'); }
+}
+
+// =========================================
+// Change password
+// =========================================
+async function changePassword() {
+  const old = document.getElementById('pw-old').value;
+  const nw  = document.getElementById('pw-new').value;
+  const nw2 = document.getElementById('pw-new2').value;
+  const errEl = document.getElementById('pw-error');
+  errEl.classList.add('d-none');
+  if (nw !== nw2) { errEl.textContent = 'Salasanat eivät täsmää'; errEl.classList.remove('d-none'); return; }
+  try {
+    const res  = await fetch('/api/change-password', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ old_password: old, new_password: nw }) });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Virhe'; errEl.classList.remove('d-none'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+    showToast('Salasana vaihdettu!', 'success');
+  } catch (e) { errEl.textContent = 'Verkkovirhe'; errEl.classList.remove('d-none'); }
+}
+
+// =========================================
+// Helpers
+// =========================================
+function formatEur(n) {
+  if (n === null || n === undefined) return '-';
+  return new Intl.NumberFormat('fi-FI', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function vuokrattuBadge(v) {
+  if (!v) return '<span class="badge bg-secondary">-</span>';
+  return v.toLowerCase() === 'kyllä'
+    ? '<span class="badge badge-vuokrattu">Kyllä</span>'
+    : '<span class="badge badge-vapaa">Ei</span>';
+}
+
+function tilaBadge(v) {
+  if (!v) return '<span class="text-muted">-</span>';
+  if (v.toLowerCase() === 'ok') return '<span class="badge badge-ok">OK</span>';
+  if (v.toLowerCase().includes('selvitys')) return '<span class="badge badge-selvitys" title="' + esc(v) + '">Selvityksessä</span>';
+  return '<span class="badge bg-secondary" title="' + esc(v) + '">' + esc(v.length > 14 ? v.substring(0, 14) + '...' : v) + '</span>';
+}
+
+function showToast(msg, type) {
+  if (!type) type = 'success';
+  const toast = document.getElementById('toast');
+  const body  = document.getElementById('toast-body');
+  toast.className = 'toast align-items-center text-white border-0 bg-' + type;
+  body.textContent = msg;
+  new bootstrap.Toast(toast, { delay: 3500 }).show();
+}
