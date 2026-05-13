@@ -86,7 +86,7 @@
         <li class="nav-item"><a class="nav-link" href="#" onclick="openAddModal()"><i class="bi bi-plus-circle me-1"></i>Lisää kohde</a></li>
         <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('arkisto')"><i class="bi bi-archive me-1"></i>Arkisto</a></li>
         <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('tilitys')"><i class="bi bi-file-earmark-bar-graph me-1"></i>Tilitysraportit</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('tuonti')"><i class="bi bi-file-earmark-excel me-1"></i>Tuo Excel</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('tuonti')"><i class="bi bi-arrow-left-right me-1"></i>Import &amp; Export</a></li>
         <li class="nav-item d-none" id="nav-kayttajat"><a class="nav-link" href="#" onclick="showTab('kayttajat')"><i class="bi bi-people me-1"></i>Käyttäjät</a></li>
       </ul>
       <div id="navbar-user" class="ms-auto me-2 d-none">
@@ -422,7 +422,7 @@
   <div id="tab-tilitys" class="d-none">
     <h4 class="mb-4 text-muted"><i class="bi bi-file-earmark-bar-graph me-2"></i>Tilitysraportit</h4>
     <div class="row g-4">
-      <div class="col-12 col-lg-5">
+      <div class="col-12 col-lg-6">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white py-3">
             <h6 class="mb-0 fw-bold"><i class="bi bi-calendar-month me-2 text-primary"></i>Generoi kuukausiraportti</h6>
@@ -452,33 +452,38 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-5">
-        <div class="card border-0 shadow-sm">
+    </div>
+  </div>
+
+  <!-- IMPORT & EXPORT TAB -->
+  <div id="tab-tuonti" class="d-none">
+    <h4 class="mb-4 text-muted"><i class="bi bi-arrow-left-right me-2"></i>Import &amp; Export</h4>
+    <div class="row g-4">
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
           <div class="card-header bg-white py-3">
-            <h6 class="mb-0 fw-bold"><i class="bi bi-table me-2 text-success"></i>Koko datan vienti</h6>
+            <h6 class="mb-0 fw-bold"><i class="bi bi-table me-2 text-success"></i>Vie kaikki kohteet</h6>
           </div>
-          <div class="card-body">
+          <div class="card-body d-flex flex-column">
             <p class="text-muted small mb-3">Vie kaikki aktiiviset kohteet Excel-tiedostoksi. Tiedosto sisältää kaikki CRM:n kentät.</p>
             <ul class="text-muted small mb-3">
               <li>Kaikki aktiiviset (ei-arkistoidut) kohteet</li>
               <li>Kaikki tietokentät</li>
               <li>Sopii varmuuskopiointiin ja analyysiin</li>
             </ul>
-            <button class="btn btn-success w-100 mt-2" onclick="exportExcel()">
+            <button class="btn btn-success w-100 mt-auto" onclick="exportExcel()">
               <i class="bi bi-file-earmark-excel me-1"></i>Vie kaikki kohteet (.xlsx)
             </button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- TUONTI TAB -->
-  <div id="tab-tuonti" class="d-none">
-    <h4 class="mb-4 text-muted"><i class="bi bi-file-earmark-excel me-2"></i>Tuo Excel-tiedosto</h4>
-    <div class="row">
+      <div class="col-12 col-lg-8">
+    <div class="row g-4">
       <div class="col-12 col-lg-6">
         <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3">
+            <h6 class="mb-0 fw-bold"><i class="bi bi-upload me-2 text-primary"></i>Tuo kohteet Excelistä</h6>
+          </div>
           <div class="card-body">
             <p class="text-muted">Lataa <strong>Value LKV Huolenpito CRM</strong> -muotoinen Excel-tiedosto (.xlsx).</p>
             <div class="border-2 border-dashed rounded-3 p-5 text-center bg-light" id="drop-zone"
@@ -508,6 +513,8 @@
         </div>
       </div>
     </div>
+    </div><!-- /col-lg-8 -->
+    </div><!-- /row outer -->
   </div>
 
   <!-- KÄYTTÄJÄT TAB -->
