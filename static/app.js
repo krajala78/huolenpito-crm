@@ -352,6 +352,16 @@ async function loadFilters() {
         opt.value = v; opt.textContent = v; vSel.appendChild(opt);
       });
     }
+    // Alustetaan dropdown fixed-strategialla jotta se ei leikkaudu overflow:hidden-elementin sisällä
+    var btnEl = document.getElementById('kaupunki-btn');
+    if (btnEl) {
+      // Poistetaan vanha instance jos on
+      var existing = bootstrap.Dropdown.getInstance(btnEl);
+      if (existing) existing.dispose();
+      new bootstrap.Dropdown(btnEl, {
+        popperConfig: { strategy: 'fixed' }
+      });
+    }
   } catch (e) { /* silent */ }
 }
 
