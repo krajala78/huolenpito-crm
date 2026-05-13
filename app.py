@@ -540,7 +540,7 @@ def safe_num(val):
     return float(m.group()) if m else None
 
 @app.route('/api/import', methods=['POST'])
-@login_required
+@admin_required
 def import_excel():
     if 'file' not in request.files:
         return jsonify({'error': 'Tiedostoa ei löydy'}), 400
