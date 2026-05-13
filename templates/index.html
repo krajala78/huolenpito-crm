@@ -28,6 +28,8 @@
     .metric-label { font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:.4px; }
     .tilitys-card { border:1px solid #dee2e6;border-radius:12px;padding:24px; }
     /* Kohteet-välilehti: kiinnitetty korkeus → ei sivutason vieritystä */
+    /* Filter-kortti pysyy taulukon sticky-otsikoiden yläpuolella */
+    #kohteet-filter-card { position: relative; z-index: 20; }
     /* Mobiili: normaali scrollaus */
     #tab-kohteet { display:flex; flex-direction:column; }
     /* Desktop (md+): kiinnitetty korkeus, taulukko scrollautuu sisällä */
@@ -222,7 +224,7 @@
         <i class="bi bi-plus-circle me-1"></i>Lisää kohde
       </button>
     </div>
-    <div class="card border-0 shadow-sm mb-3">
+    <div class="card border-0 shadow-sm mb-3" id="kohteet-filter-card">
       <div class="card-body py-3">
         <div class="row g-2 align-items-end">
           <div class="col-12 col-md-4">
