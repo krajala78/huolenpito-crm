@@ -245,17 +245,12 @@
           </div>
           <div class="col-6 col-md-2">
             <label class="form-label small text-muted mb-1">Kaupunki</label>
-            <div class="dropdown w-100" id="kaupunki-dd">
+            <div class="w-100" id="kaupunki-dd">
               <button class="btn btn-outline-secondary w-100 text-start d-flex align-items-center justify-content-between"
-                type="button" id="kaupunki-btn" data-bs-toggle="dropdown" data-bs-auto-close="outside" style="height:38px;font-size:14px">
+                type="button" id="kaupunki-btn" onclick="toggleKaupunkiMenu()" style="height:38px;font-size:14px">
                 <span id="kaupunki-label">Kaikki</span>
                 <i class="bi bi-chevron-down ms-1 small"></i>
               </button>
-              <ul class="dropdown-menu" id="kaupunki-menu" style="max-height:260px;overflow-y:auto;min-width:220px;padding:8px">
-                <li><a class="dropdown-item small py-1" href="#" onclick="clearKaupunkiFilter();return false">
-                  <i class="bi bi-x-circle me-1"></i>Tyhjennä valinta</a></li>
-                <li><hr class="dropdown-divider my-1"></li>
-              </ul>
             </div>
           </div>
           <div class="col-6 col-md-2">
@@ -739,6 +734,16 @@
     </div>
   </div>
 </div>
+
+<!-- Kaupunki-valikko (position:fixed, ei leikkaudu mistään) -->
+<ul id="kaupunki-menu"
+    style="display:none;position:fixed;z-index:9000;background:#fff;border:1px solid #dee2e6;
+           border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);
+           max-height:280px;overflow-y:auto;min-width:220px;padding:8px;list-style:none;margin:0">
+  <li><a class="dropdown-item small py-1" href="#" onclick="clearKaupunkiFilter();return false">
+    <i class="bi bi-x-circle me-1"></i>Tyhjennä valinta</a></li>
+  <li><hr class="dropdown-divider my-1"></li>
+</ul>
 
 <!-- Confirm Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1">

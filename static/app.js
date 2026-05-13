@@ -352,18 +352,38 @@ async function loadFilters() {
         opt.value = v; opt.textContent = v; vSel.appendChild(opt);
       });
     }
-    // Alustetaan dropdown fixed-strategialla jotta se ei leikkaudu overflow:hidden-elementin sisällä
-    var btnEl = document.getElementById('kaupunki-btn');
-    if (btnEl) {
-      // Poistetaan vanha instance jos on
-      var existing = bootstrap.Dropdown.getInstance(btnEl);
-      if (existing) existing.dispose();
-      new bootstrap.Dropdown(btnEl, {
-        popperConfig: { strategy: 'fixed' }
-      });
-    }
+
   } catch (e) { /* silent */ }
 }
+
+function toggleKaupunkiMenu() {
+  var menu = document.getElementById('kaupunki-menu');
+  var btn  = document.getElementById('kaupunki-btn');
+  if (!menu || !btn) return;
+  if (menu.style.display === 'none' || !menu.style.display) {
+    var r = btn.getBoundingClientRect();
+    menu.style.left = r.left + 'px';
+    menu.style.top  = (r.bottom + 4) + 'px';
+    menu.style.width = Math.max(r.width, 220) + 'px';
+    menu.style.display = 'block';
+  } else {
+    menu.style.display = 'none';
+  }
+}
+
+function closeKaupunkiMenu() {
+  var menu = document.getElementById('kaupunki-menu');
+  if (menu) menu.style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  var btn  = document.getElementById('kaupunki-btn');
+  var menu = document.getElementById('kaupunki-menu');
+  if (!btn || !menu) return;
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
 
 function toggleKaupunki(k) {
   const idx = selectedKaupungit.indexOf(k);
