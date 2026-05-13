@@ -614,8 +614,26 @@ def get_filters():
 @app.route('/api/export')
 @login_required
 def export_excel():
+    ids_param = request.args.get('ids', '').strip()
     conn = get_db()
-    rows = execute_query(conn, 'SELECT * FROM properties WHERE arkistoitu = 0 ORDER BY omistaja, kohde_osoite')
+    if ids_param:
+        try:
+            ids = [int(i) for i in ids_param.split(',') if i.strip().isdigit()]
+        except Exception:
+            ids = []
+        if ids:
+            p = placeholder()
+            if USE_PG:
+                placeholders = ','.join(['%s'] * len(ids))
+            else:
+                placeholders = ','.join(['?'] * len(ids))
+            rows = execute_query(conn,
+                f'SELECT * FROM properties WHERE arkistoitu = 0 AND id IN ({placeholders}) ORDER BY omistaja, kohde_osoite',
+                ids)
+        else:
+            rows = execute_query(conn, 'SELECT * FROM properties WHERE arkistoitu = 0 ORDER BY omistaja, kohde_osoite')
+    else:
+        rows = execute_query(conn, 'SELECT * FROM properties WHERE arkistoitu = 0 ORDER BY omistaja, kohde_osoite')
     conn.close()
     # Map column names to Finnish
     col_map = {v: k for k, v in EXCEL_TO_DB.items()}

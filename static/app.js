@@ -3,6 +3,7 @@
 // =========================================
 let allProperties = [];
 let allArchived   = [];
+let lastFiltered  = [];  // filtteröity lista Vie Excel -toiminnolle
 let editingId     = null;
 let viewingId     = null;
 let currentUser   = null;
@@ -461,6 +462,7 @@ function filterProperties() {
     return ms && mv && mk && mh;
   });
   var colFiltered = applyColFiltersToList(filtered);
+  lastFiltered = colFiltered;
   renderTable(colFiltered);
   // Päivitä Vuokratulot/kk (admin-only) filtteröidyn listan mukaan
   var vuokraSum = colFiltered.reduce(function(s, p) { return s + (parseFloat(p.kokonaisumma) || 0); }, 0);
@@ -622,6 +624,11 @@ async function hardDeleteProperty(id) {
 // Excel export & Tilitysraportit
 // =========================================
 function exportExcel() { window.location = '/api/export'; }
+
+function exportExcelFiltered() {
+  var ids = (lastFiltered.length ? lastFiltered : allProperties).map(function(p){ return p.id; });
+  window.location = '/api/export?ids=' + ids.join(',');
+}
 
 function initTilitysForm() {
   const sel = document.getElementById('tilitys-vuosi'); if (!sel) return;
