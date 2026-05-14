@@ -225,45 +225,16 @@
       </button>
     </div>
     <div class="card border-0 shadow-sm mb-3" id="kohteet-filter-card">
-      <div class="card-body py-3">
-        <div class="row g-2 align-items-end">
-          <div class="col-12 col-md-4">
-            <label class="form-label small text-muted mb-1">Haku</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-search"></i></span>
-              <input type="text" id="search-input" class="form-control"
-                placeholder="Osoite, omistaja, vuokralainen, tila..." oninput="filterProperties()">
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label small text-muted mb-1">Vuokrattu</label>
-            <select id="filter-vuokrattu" class="form-select" onchange="filterProperties()">
-              <option value="">Kaikki</option>
-              <option value="Kyllä">Kyllä</option>
-              <option value="Ei">Ei</option>
-            </select>
-          </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label small text-muted mb-1">Kaupunki</label>
-            <div class="w-100" id="kaupunki-dd">
-              <button class="btn btn-outline-secondary w-100 text-start d-flex align-items-center justify-content-between"
-                type="button" id="kaupunki-btn" onclick="toggleKaupunkiMenu()" style="height:38px;font-size:14px">
-                <span id="kaupunki-label">Kaikki</span>
-                <i class="bi bi-chevron-down ms-1 small"></i>
-              </button>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label small text-muted mb-1">Vastuuhenkilö</label>
-            <select id="filter-vastuuhenkilo" class="form-select" onchange="filterProperties()">
-              <option value="">Kaikki</option>
-            </select>
-          </div>
-          <div class="col-6 col-md-2">
-            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
-              <i class="bi bi-x-circle me-1"></i>Tyhjennä
-            </button>
-          </div>
+      <div class="card-body py-2">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <label class="form-label small text-muted mb-0 me-1">Vastuuhenkilö</label>
+          <select id="filter-vastuuhenkilo" class="form-select form-select-sm" style="max-width:200px" onchange="filterProperties()">
+            <option value="">Kaikki</option>
+          </select>
+          <button class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+            <i class="bi bi-x-circle me-1"></i>Tyhjennä
+          </button>
+          <span class="text-muted small ms-auto" id="result-count"></span>
         </div>
       </div>
     </div>
@@ -373,7 +344,7 @@
           </table>
         </div>
       </div>
-      <div class="card-footer bg-white border-top text-muted small" id="result-count"></div>
+      <div class="card-footer bg-white border-top text-muted small" id="result-count-footer"></div>
     </div>
   </div>
 

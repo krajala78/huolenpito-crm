@@ -183,6 +183,8 @@ function renderTable(props) {
   const tbody   = document.getElementById('properties-tbody');
   const countEl = document.getElementById('result-count');
   if (countEl) countEl.textContent = props.length + ' kohdetta';
+  const countFooter = document.getElementById('result-count-footer');
+  if (countFooter) countFooter.textContent = props.length + ' kohdetta';
   if (!props.length) {
     tbody.innerHTML = '<tr><td colspan="43" class="text-center py-5 text-muted">Ei kohteita.</td></tr>';
     return;
@@ -549,11 +551,9 @@ function recalcKokonaisumma() {
 }
 
 function clearFilters() {
-  const si = document.getElementById('search-input');
-  const fv = document.getElementById('filter-vuokrattu');
   const fh = document.getElementById('filter-vastuuhenkilo');
-  if (si) si.value = ''; if (fv) fv.value = ''; if (fh) fh.value = '';
-  clearKaupunkiFilter();
+  if (fh) fh.value = '';
+  filterProperties();
 }
 
 // =========================================
