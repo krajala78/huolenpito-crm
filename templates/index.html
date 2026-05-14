@@ -191,35 +191,8 @@
 
   <!-- KOHTEET TAB -->
   <div id="tab-kohteet" class="d-none">
-    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-      <h4 class="mb-0 text-muted"><i class="bi bi-building me-2"></i>Kohteet</h4>
-      <div class="d-flex flex-wrap gap-2 align-items-center ms-3" id="kohteet-stats-chips">
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-total" onclick="filterByChip('total')" style="font-size:14px;cursor:pointer" title="Näytä kaikki">
-          <i class="bi bi-building text-primary"></i>
-          <span class="text-muted">Yhteensä:</span>
-          <span class="fw-bold text-primary" id="ks-total">–</span>
-        </div>
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-vuokrattu" onclick="filterByChip('vuokrattu')" style="font-size:14px;cursor:pointer" title="Suodata vuokratut">
-          <i class="bi bi-person-check text-success"></i>
-          <span class="text-muted">Vuokrattu:</span>
-          <span class="fw-bold text-success" id="ks-vuokrattu">–</span>
-        </div>
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-vapaat" onclick="filterByChip('vapaat')" style="font-size:14px;cursor:pointer" title="Suodata vapaat">
-          <i class="bi bi-door-open text-danger"></i>
-          <span class="text-muted">Vapaana:</span>
-          <span class="fw-bold text-danger" id="ks-vapaat">–</span>
-        </div>
-        <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-markkinalla" onclick="filterByChip('markkinalla')" style="font-size:14px;cursor:pointer" title="Suodata vuokramarkkinalla">
-          <i class="bi bi-megaphone" style="color:#6f42c1"></i>
-          <span class="text-muted">Vuokramarkkinalla:</span>
-          <span class="fw-bold" style="color:#6f42c1" id="ks-markkinalla">–</span>
-        </div>
-      </div>
-      <div class="d-flex align-items-center gap-2 ms-2 me-auto">
-        <select id="filter-vastuuhenkilo" class="form-select form-select-sm" style="width:160px" onchange="filterProperties()">
-          <option value="">Vastuuhenkilö</option>
-        </select>
-      </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+      <h4 class="mb-0 text-muted me-auto"><i class="bi bi-building me-2"></i>Kohteet</h4>
       <div class="admin-only d-none align-items-center gap-2 px-3 py-1 rounded-3 border border-info-subtle bg-info-subtle" id="vuokratulot-kohteet-box" style="font-size:14px">
         <i class="bi bi-cash-stack text-info"></i>
         <span class="text-muted">Vuokratulot/kk:</span>
@@ -235,6 +208,33 @@
         <i class="bi bi-plus-circle me-1"></i>Lisää kohde
       </button>
     </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-3" id="kohteet-stats-chips">
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-total" onclick="filterByChip('total')" style="font-size:14px;cursor:pointer" title="Näytä kaikki">
+        <i class="bi bi-building text-primary"></i>
+        <span class="text-muted">Yhteensä:</span>
+        <span class="fw-bold text-primary" id="ks-total">–</span>
+      </div>
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-vuokrattu" onclick="filterByChip('vuokrattu')" style="font-size:14px;cursor:pointer" title="Suodata vuokratut">
+        <i class="bi bi-person-check text-success"></i>
+        <span class="text-muted">Vuokrattu:</span>
+        <span class="fw-bold text-success" id="ks-vuokrattu">–</span>
+      </div>
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-vapaat" onclick="filterByChip('vapaat')" style="font-size:14px;cursor:pointer" title="Suodata vapaat">
+        <i class="bi bi-door-open text-danger"></i>
+        <span class="text-muted">Vapaana:</span>
+        <span class="fw-bold text-danger" id="ks-vapaat">–</span>
+      </div>
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white ks-chip" id="chip-markkinalla" onclick="filterByChip('markkinalla')" style="font-size:14px;cursor:pointer" title="Suodata vuokramarkkinalla">
+        <i class="bi bi-megaphone" style="color:#6f42c1"></i>
+        <span class="text-muted">Vuokramarkkinalla:</span>
+        <span class="fw-bold" style="color:#6f42c1" id="ks-markkinalla">–</span>
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-2">
+        <select id="filter-vastuuhenkilo" class="form-select form-select-sm" style="width:160px" onchange="filterProperties()">
+          <option value="">Vastuuhenkilö</option>
+        </select>
+      </div>
+    </div>>
 
 
     <div class="card border-0 shadow-sm">
