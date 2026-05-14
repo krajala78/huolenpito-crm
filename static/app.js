@@ -282,15 +282,15 @@ function renderTable(props) {
     // 7. Huolenpitosopimus
     + cell(p.huolenpitosopimus)
     // 8. Huolenpidossa
-    + cellToggle(p.id, 'huolenpidossa', p.huolenpidossa)
+    + cellC(p.huolenpidossa)
     // 9. Vuokrauksessa
-    + cellToggle(p.id, 'vuokrauksessa', p.vuokrauksessa)
+    + cellC(p.vuokrauksessa)
     // 10. Vuokravälittäjä
     + cell(p.vuokravalittaja)
     // 11. Vuokrattu
-    + cellToggle(p.id, 'vuokrattu', p.vuokrattu)
+    + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
     // 12. Vuokramarkkinalla
-    + cellToggle(p.id, 'vuokramarkkinalla', p.vuokramarkkinalla)
+    + cellC(p.vuokramarkkinalla)
     // 13. Asunnon tila
     + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
     // 14. Vuokralainen
