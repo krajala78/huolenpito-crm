@@ -181,8 +181,49 @@ async function loadProperties() {
 
 function cell(v) { return '<td>' + esc(v || '-') + '</td>'; }
 function cellC(v) { return '<td class="text-center">' + esc(v || '-') + '</td>'; }
+function cellToggle(id, field, v) {
+  var yes = (v || '').toLowerCase() === 'kyllä';
+  var cls = yes ? 'badge-toggle-yes' : 'badge-toggle-no';
+  var label = yes ? 'Kyllä' : 'Ei';
+  return '<td class="text-center"><span class="badge-toggle ' + cls + '" '
+    + 'onclick="toggleBoolField(event,' + id + ',\'' + field + '\',\'' + (yes?'Kyllä':'Ei') + '\')"'
+    + '>' + label + '</span></td>';
+}
 function cellE(v) { return '<td class="text-end">' + esc(v || '-') + '</td>'; }
 function cellEur(v) { return '<td class="text-end">' + (v != null && v !== '' ? formatEur(v) : '-') + '</td>'; }
+
+
+// =========================================
+// Inline toggle for boolean fields
+// =========================================
+async function toggleBoolField(event, propId, field, currentVal) {
+  event.stopPropagation();
+  var newVal = currentVal.toLowerCase() === 'kyllä' ? 'Ei' : 'Kyllä';
+  // Optimistic UI update
+  var idx = allProperties.findIndex(function(p) { return p.id === propId; });
+  if (idx !== -1) allProperties[idx][field] = newVal;
+  filterProperties();
+  // Persist to server
+  try {
+    var body = {};
+    body[field] = newVal;
+    var res = await fetch('/api/properties/' + propId, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      // Revert on failure
+      if (idx !== -1) allProperties[idx][field] = currentVal;
+      filterProperties();
+      console.error('Toggle failed:', await res.text());
+    }
+  } catch (e) {
+    if (idx !== -1) allProperties[idx][field] = currentVal;
+    filterProperties();
+    console.error('Toggle error:', e);
+  }
+}
 
 function renderTable(props) {
   const tbody   = document.getElementById('properties-tbody');
@@ -216,15 +257,15 @@ function renderTable(props) {
     // 7. Huolenpitosopimus
     + cell(p.huolenpitosopimus)
     // 8. Huolenpidossa
-    + cellC(p.huolenpidossa)
+    + cellToggle(p.id, 'huolenpidossa', p.huolenpidossa)
     // 9. Vuokrauksessa
-    + cellC(p.vuokrauksessa)
+    + cellToggle(p.id, 'vuokrauksessa', p.vuokrauksessa)
     // 10. Vuokravälittäjä
     + cell(p.vuokravalittaja)
     // 11. Vuokrattu
-    + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
-    // 12. Vuokralla
-    + cellC(p.vuokramarkkinalla)
+    + cellToggle(p.id, 'vuokrattu', p.vuokrattu)
+    // 12. Vuokramarkkinalla
+    + cellToggle(p.id, 'vuokramarkkinalla', p.vuokramarkkinalla)
     // 13. Asunnon tila
     + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
     // 14. Vuokralainen

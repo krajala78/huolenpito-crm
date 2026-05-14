@@ -107,3 +107,19 @@ body {
     padding: 0.4rem 0.5rem;
   }
 }
+
+/* Inline toggle badges */
+.badge-toggle {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity .15s, transform .1s;
+}
+.badge-toggle:hover { opacity: .8; transform: scale(1.07); }
+.badge-toggle:active { transform: scale(.96); }
+.badge-toggle-yes { background-color: #16a34a; color: #fff; }
+.badge-toggle-no  { background-color: #e5e7eb; color: #6b7280; }
