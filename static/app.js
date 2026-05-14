@@ -1016,10 +1016,10 @@ async function loadLogi() {
       return `<tr>
         <td class="text-muted small">${ts}</td>
         <td><strong>${r.username || '–'}</strong></td>
-        <td>${r.action || '–'}</td>
+        <td>${r.action || '–'}${r.details ? `<span class="text-muted ms-2" style="font-size:12px">(${r.details})</span>` : ''}</td>
         <td>${badge}</td>
         <td class="text-muted">${r.target_id != null ? r.target_id : ''}</td>
-        <td class="text-muted small">${r.details || ''}</td>
+        <td></td>
       </tr>`;
     }).join('');
   } catch (e) {

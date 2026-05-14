@@ -518,7 +518,7 @@ def update_property(prop_id):
     conn = get_db()
     execute_write(conn, sql, values)
     conn.commit(); conn.close()
-    log_action('Muokkasi kohdetta', 'property', prop_id)
+    log_action('Muokkasi kohdetta', 'property', prop_id, data.get('kohde_osoite'))
     return jsonify({'message': 'Päivitetty onnistuneesti'})
 
 @app.route('/api/properties/<int:prop_id>/archive', methods=['PUT'])
@@ -527,10 +527,11 @@ def archive_property(prop_id):
     p = placeholder()
     try:
         conn = get_db()
+        _addr = (execute_one(conn, f'SELECT kohde_osoite FROM properties WHERE id = {p}', (prop_id,)) or {}).get('kohde_osoite')
         execute_write(conn, f'UPDATE properties SET arkistoitu = 1, paivitetty = {p} WHERE id = {p}',
                       (datetime.now().isoformat(), prop_id))
         conn.commit(); conn.close()
-        log_action('Arkistoi kohteen', 'property', prop_id)
+        log_action('Arkistoi kohteen', 'property', prop_id, _addr)
         return jsonify({'message': 'Kohde arkistoitu'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -541,10 +542,11 @@ def restore_property(prop_id):
     p = placeholder()
     try:
         conn = get_db()
+        _addr = (execute_one(conn, f'SELECT kohde_osoite FROM properties WHERE id = {p}', (prop_id,)) or {}).get('kohde_osoite')
         execute_write(conn, f'UPDATE properties SET arkistoitu = 0, paivitetty = {p} WHERE id = {p}',
                       (datetime.now().isoformat(), prop_id))
         conn.commit(); conn.close()
-        log_action('Palautti kohteen arkistosta', 'property', prop_id)
+        log_action('Palautti kohteen arkistosta', 'property', prop_id, _addr)
         return jsonify({'message': 'Kohde palautettu'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -555,9 +557,10 @@ def delete_property(prop_id):
     p = placeholder()
     try:
         conn = get_db()
+        _addr = (execute_one(conn, f'SELECT kohde_osoite FROM properties WHERE id = {p}', (prop_id,)) or {}).get('kohde_osoite')
         execute_write(conn, f'DELETE FROM properties WHERE id = {p}', (prop_id,))
         conn.commit(); conn.close()
-        log_action('Poisti kohteen pysyvästi', 'property', prop_id)
+        log_action('Poisti kohteen pysyvästi', 'property', prop_id, _addr)
         return jsonify({'message': 'Poistettu pysyvästi'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
