@@ -448,12 +448,28 @@ function clearColFilters() {
 }
 
 function populateColFilterSelects(props) {
+  // Alustetaan kerran koko datalla (sivun lataus)
+  _rebuildColFilterSelects(props);
+}
+
+function _rebuildColFilterSelects(baseProps, exceptCol) {
+  // baseProps = pohja ennen sarakesuodattimia
+  // exceptCol = tämän sarakkeen oma suodatin jätetään pois (kaskadointi)
   var selects = document.querySelectorAll('#col-filter-row select[data-col]');
   selects.forEach(function(sel) {
     var col = sel.getAttribute('data-col');
     var current = sel.value;
+    // Laske saatavilla olevat arvot: kaikki muut sarakesuodattimet paitsi oma
+    var filtered = baseProps.filter(function(p) {
+      return Object.keys(colFilters).every(function(fc) {
+        if (fc === col) return true; // ohita oma
+        var fv = colFilters[fc];
+        var pval = (p[fc] != null ? String(p[fc]) : '');
+        return pval.toLowerCase().includes(fv.toLowerCase());
+      });
+    });
     var seen = {};
-    props.forEach(function(p) {
+    filtered.forEach(function(p) {
       var v = p[col];
       if (v != null && v !== '') seen[String(v)] = true;
     });
@@ -500,6 +516,8 @@ function filterProperties() {
   var colFiltered = applyColFiltersToList(filtered);
   lastFiltered = colFiltered;
   renderTable(colFiltered);
+  // Päivitä sarakesuodattimet kaskadoivasti (Excel-tyyli)
+  _rebuildColFilterSelects(filtered);
   // Päivitä Vuokratulot/kk (admin-only) filtteröidyn listan mukaan
   var vuokraSum = colFiltered.reduce(function(s, p) { return s + (parseFloat(p.kokonaisumma) || 0); }, 0);
   var vuokraEl = document.getElementById('stat-vuokra');
