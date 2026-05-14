@@ -418,8 +418,12 @@ function clearKaupunkiFilter() {
 }
 
 // =========================================
-// Column filters
+// Column filters – multiselect (Excel-style)
 // =========================================
+// colFilters: { col: Set<string> }  – empty Set = no filter
+let _activeColFilterCol = null;
+let _colFilterBaseProps = [];
+
 function toggleColFilters() {
   var row = document.getElementById('col-filter-row');
   var btn = document.getElementById('col-filter-toggle-btn');
@@ -430,68 +434,167 @@ function toggleColFilters() {
     btn.classList.toggle('btn-outline-secondary', !hidden);
     btn.classList.toggle('btn-secondary', hidden);
   }
-  if (!hidden) {
-    // Clearing filters when hiding
-    clearColFilters();
+  if (!hidden) { closeColFilterMenu(); clearColFilters(); }
+}
+
+function openColFilterMenu(btn) {
+  var col = btn.getAttribute('data-col');
+  _activeColFilterCol = col;
+  var menu = document.getElementById('col-filter-menu');
+  // Position menu near button
+  var rect = btn.getBoundingClientRect();
+  var top = rect.bottom + 4;
+  var left = rect.left;
+  if (left + 300 > window.innerWidth) left = window.innerWidth - 310;
+  if (top + 400 > window.innerHeight) top = rect.top - 400;
+  menu.style.top = top + 'px';
+  menu.style.left = left + 'px';
+  menu.style.display = 'block';
+  document.getElementById('col-filter-search').value = '';
+  _buildColMenuOptions(col, '');
+  // Click-outside to close
+  setTimeout(function() {
+    document.addEventListener('mousedown', _colMenuOutsideClick);
+  }, 0);
+}
+
+function _colMenuOutsideClick(e) {
+  var menu = document.getElementById('col-filter-menu');
+  if (menu && !menu.contains(e.target) && !e.target.classList.contains('col-filter-btn')) {
+    closeColFilterMenu();
   }
 }
 
-function applyColFilter(input) {
-  var col = input.getAttribute('data-col');
-  var val = input.value.trim().toLowerCase();
-  if (val) {
-    colFilters[col] = val;
+function closeColFilterMenu() {
+  var menu = document.getElementById('col-filter-menu');
+  if (menu) menu.style.display = 'none';
+  _activeColFilterCol = null;
+  document.removeEventListener('mousedown', _colMenuOutsideClick);
+}
+
+function _buildColMenuOptions(col, searchVal) {
+  var selected = colFilters[col] || new Set();
+  // Available values: apply all OTHER col filters to baseProps
+  var available = _colFilterBaseProps.filter(function(p) {
+    return Object.keys(colFilters).every(function(fc) {
+      if (fc === col) return true;
+      var s = colFilters[fc];
+      if (!s || s.size === 0) return true;
+      var pval = p[fc] != null ? String(p[fc]) : '';
+      return s.has(pval);
+    });
+  });
+  var seen = {};
+  available.forEach(function(p) {
+    var v = p[col];
+    if (v != null && v !== '') seen[String(v)] = true;
+  });
+  // Also include currently selected values even if cascaded out
+  selected.forEach(function(v) { seen[v] = true; });
+  var sorted = Object.keys(seen).sort(function(a, b) { return a.localeCompare(b, 'fi'); });
+  if (searchVal) {
+    var sv = searchVal.toLowerCase();
+    sorted = sorted.filter(function(v) { return v.toLowerCase().includes(sv); });
+  }
+  var allChecked = sorted.length > 0 && sorted.every(function(v) { return selected.has(v); });
+  document.getElementById('col-filter-all-cb').checked = allChecked;
+  var optDiv = document.getElementById('col-filter-options');
+  optDiv.innerHTML = sorted.map(function(v) {
+    var chk = selected.has(v) ? 'checked' : '';
+    var esc = v.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    return '<label class="d-flex align-items-center gap-2 px-3 py-1 user-select-none" style="cursor:pointer;font-size:13px;white-space:nowrap">' +
+      '<input type="checkbox" value="' + esc + '" ' + chk + ' onchange="toggleColFilterValue(this)">' +
+      '<span>' + esc + '</span></label>';
+  }).join('');
+  if (sorted.length === 0) {
+    optDiv.innerHTML = '<div class="px-3 py-2 text-muted" style="font-size:13px">Ei arvoja</div>';
+  }
+}
+
+function filterColMenuOptions(val) {
+  if (_activeColFilterCol) _buildColMenuOptions(_activeColFilterCol, val);
+}
+
+function toggleColFilterValue(cb) {
+  var col = _activeColFilterCol;
+  if (!col) return;
+  if (!colFilters[col]) colFilters[col] = new Set();
+  if (cb.checked) colFilters[col].add(cb.value);
+  else colFilters[col].delete(cb.value);
+  if (colFilters[col].size === 0) delete colFilters[col];
+  _updateColFilterBtn(col);
+  filterProperties();
+  // Rebuild options to reflect cascading (keep search)
+  var sv = document.getElementById('col-filter-search').value;
+  _buildColMenuOptions(col, sv);
+}
+
+function toggleAllColFilter(checked) {
+  var col = _activeColFilterCol;
+  if (!col) return;
+  var options = document.querySelectorAll('#col-filter-options input[type=checkbox]');
+  if (checked) {
+    if (!colFilters[col]) colFilters[col] = new Set();
+    options.forEach(function(cb) { colFilters[col].add(cb.value); cb.checked = true; });
   } else {
     delete colFilters[col];
+    options.forEach(function(cb) { cb.checked = false; });
   }
+  _updateColFilterBtn(col);
   filterProperties();
+}
+
+function clearOneColFilter() {
+  var col = _activeColFilterCol;
+  if (!col) return;
+  delete colFilters[col];
+  _updateColFilterBtn(col);
+  filterProperties();
+  var sv = document.getElementById('col-filter-search').value;
+  _buildColMenuOptions(col, sv);
+}
+
+function _updateColFilterBtn(col) {
+  var btn = document.querySelector('#col-filter-row .col-filter-btn[data-col="' + col + '"]');
+  if (!btn) return;
+  var s = colFilters[col];
+  if (!s || s.size === 0) {
+    btn.textContent = 'Kaikki';
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-outline-secondary');
+  } else if (s.size === 1) {
+    btn.textContent = s.values().next().value;
+    btn.classList.add('btn-primary');
+    btn.classList.remove('btn-outline-secondary');
+  } else {
+    btn.textContent = s.size + ' valittu';
+    btn.classList.add('btn-primary');
+    btn.classList.remove('btn-outline-secondary');
+  }
 }
 
 function clearColFilters() {
   colFilters = {};
-  var inputs = document.querySelectorAll('#col-filter-row [data-col]');
-  inputs.forEach(function(inp) { inp.value = ''; });
+  document.querySelectorAll('#col-filter-row .col-filter-btn[data-col]').forEach(function(btn) {
+    btn.textContent = 'Kaikki';
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-outline-secondary');
+  });
   filterProperties();
 }
 
 function populateColFilterSelects(props) {
-  // Alustetaan kerran koko datalla (sivun lataus)
-  _rebuildColFilterSelects(props);
+  _colFilterBaseProps = props;
 }
 
-function _rebuildColFilterSelects(baseProps, exceptCol) {
-  // baseProps = pohja ennen sarakesuodattimia
-  // exceptCol = tämän sarakkeen oma suodatin jätetään pois (kaskadointi)
-  var selects = document.querySelectorAll('#col-filter-row select[data-col]');
-  selects.forEach(function(sel) {
-    var col = sel.getAttribute('data-col');
-    var current = sel.value;
-    // Laske saatavilla olevat arvot: kaikki muut sarakesuodattimet paitsi oma
-    var filtered = baseProps.filter(function(p) {
-      return Object.keys(colFilters).every(function(fc) {
-        if (fc === col) return true; // ohita oma
-        var fv = colFilters[fc];
-        var pval = (p[fc] != null ? String(p[fc]) : '');
-        return pval.toLowerCase().includes(fv.toLowerCase());
-      });
-    });
-    var seen = {};
-    filtered.forEach(function(p) {
-      var v = p[col];
-      if (v != null && v !== '') seen[String(v)] = true;
-    });
-    var sorted = Object.keys(seen).sort(function(a, b) {
-      return a.localeCompare(b, 'fi');
-    });
-    sel.innerHTML = '<option value="">Kaikki</option>';
-    sorted.forEach(function(v) {
-      var opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = v;
-      if (v === current) opt.selected = true;
-      sel.appendChild(opt);
-    });
-  });
+function _rebuildColFilterSelects(baseProps) {
+  _colFilterBaseProps = baseProps;
+  // If menu is open, refresh its options
+  var menu = document.getElementById('col-filter-menu');
+  if (menu && menu.style.display !== 'none' && _activeColFilterCol) {
+    var sv = document.getElementById('col-filter-search').value;
+    _buildColMenuOptions(_activeColFilterCol, sv);
+  }
 }
 
 function applyColFiltersToList(props) {
@@ -499,9 +602,10 @@ function applyColFiltersToList(props) {
   if (keys.length === 0) return props;
   return props.filter(function(p) {
     return keys.every(function(col) {
-      var val = colFilters[col];
-      var pval = (p[col] != null ? String(p[col]) : '');
-      return pval.toLowerCase().includes(val.toLowerCase());
+      var s = colFilters[col];
+      if (!s || s.size === 0) return true;
+      var pval = p[col] != null ? String(p[col]) : '';
+      return s.has(pval);
     });
   });
 }
