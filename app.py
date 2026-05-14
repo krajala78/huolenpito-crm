@@ -366,7 +366,8 @@ def stats():
         "SELECT COUNT(*) FROM properties WHERE LOWER(vuokramarkkinalla) = 'kyllä' AND arkistoitu = 0")
     vuokra_sum = execute_scalar(conn,
         "SELECT SUM(kokonaisumma) FROM properties WHERE kokonaisumma IS NOT NULL "
-        "AND LOWER(vuokrattu) = 'kyllä' AND arkistoitu = 0") or 0
+        "AND LOWER(vuokrattu) = 'kyllä' AND LOWER(vuokratilitykset) = 'tilitys' "
+        "AND arkistoitu = 0") or 0
     huolenpidossa = execute_scalar(conn,
         "SELECT COUNT(*) FROM properties WHERE LOWER(huolenpidossa) = 'kyllä' AND arkistoitu = 0")
     per_vastuuhenkilo = execute_query(conn,
