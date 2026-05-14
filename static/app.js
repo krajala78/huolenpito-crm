@@ -193,6 +193,31 @@ function cellE(v) { return '<td class="text-end">' + esc(v || '-') + '</td>'; }
 function cellEur(v) { return '<td class="text-end">' + (v != null && v !== '' ? formatEur(v) : '-') + '</td>'; }
 
 
+
+// =========================================
+// Stat chip filters
+// =========================================
+let activeChip = null;
+
+function filterByChip(chip) {
+  if (activeChip === chip || chip === 'total') {
+    activeChip = null;
+  } else {
+    activeChip = chip;
+  }
+  // Update chip visual state
+  ['total','vuokrattu','vapaat','markkinalla'].forEach(function(c) {
+    var el = document.getElementById('chip-' + c);
+    if (!el) return;
+    if (c === activeChip) {
+      el.classList.add('ks-chip-active');
+    } else {
+      el.classList.remove('ks-chip-active');
+    }
+  });
+  filterProperties();
+}
+
 // =========================================
 // Inline toggle for boolean fields
 // =========================================
@@ -663,7 +688,12 @@ function filterProperties() {
     const mv = !vuokrattu || (p.vuokrattu || '').toLowerCase() === vuokrattu.toLowerCase();
     const mk = selectedKaupungit.length === 0 || selectedKaupungit.includes(p.kaupunki);
     const mh = !vastuu || p.vastuuhenkilo === vastuu;
-    return ms && mv && mk && mh;
+    const isVuokrattu = (p.vuokrattu || '').toLowerCase() === 'kyllä';
+    const mc = !activeChip
+      || (activeChip === 'vuokrattu' && isVuokrattu)
+      || (activeChip === 'vapaat' && !isVuokrattu)
+      || (activeChip === 'markkinalla' && (p.vuokramarkkinalla || '').toLowerCase() === 'kyllä');
+    return ms && mv && mk && mh && mc;
   });
   var colFiltered = applyColFiltersToList(filtered);
   lastFiltered = colFiltered;
