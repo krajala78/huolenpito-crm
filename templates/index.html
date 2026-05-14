@@ -87,6 +87,7 @@
         <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('tilitys')"><i class="bi bi-file-earmark-bar-graph me-1"></i>Tilitysraportit</a></li>
         <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('tuonti')"><i class="bi bi-arrow-left-right me-1"></i>Import &amp; Export</a></li>
         <li class="nav-item d-none" id="nav-kayttajat"><a class="nav-link" href="#" onclick="showTab('kayttajat')"><i class="bi bi-people me-1"></i>Käyttäjät</a></li>
+        <li class="nav-item d-none" id="nav-logi"><a class="nav-link" href="#" onclick="showTab('logi')"><i class="bi bi-journal-text me-1"></i>Logi</a></li>
       </ul>
       <div id="navbar-user" class="ms-auto me-2 d-none">
         <div class="nav-avatar" id="nav-avatar">A</div>
@@ -498,6 +499,36 @@
               </tr>
             </thead>
             <tbody id="users-tbody">
+              <tr><td colspan="6" class="text-center py-4 text-muted">Ladataan...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- LOGI TAB -->
+  <div id="tab-logi" class="d-none">
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-4">
+      <h4 class="mb-0 text-muted me-auto"><i class="bi bi-journal-text me-2"></i>Toimintoloki</h4>
+      <button class="btn btn-outline-secondary btn-sm" onclick="loadLogi()"><i class="bi bi-arrow-clockwise me-1"></i>Päivitä</button>
+    </div>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:160px">Aika</th>
+                <th style="width:160px">Käyttäjä</th>
+                <th>Toiminto</th>
+                <th style="width:100px">Kohdetyyppi</th>
+                <th style="width:70px">ID</th>
+                <th>Lisätiedot</th>
+              </tr>
+            </thead>
+            <tbody id="logi-tbody">
               <tr><td colspan="6" class="text-center py-4 text-muted">Ladataan...</td></tr>
             </tbody>
           </table>

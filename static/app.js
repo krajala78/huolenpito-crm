@@ -87,9 +87,11 @@ function updateNavbarUser() {
   if (u.role === 'admin') {
     badge.textContent = 'Admin'; badge.className = 'nav-role-badge nav-role-admin';
     document.getElementById('nav-kayttajat').classList.remove('d-none');
+    document.getElementById('nav-logi').classList.remove('d-none');
   } else {
     badge.textContent = 'Käyttäjä'; badge.className = 'nav-role-badge nav-role-user';
     document.getElementById('nav-kayttajat').classList.add('d-none');
+    document.getElementById('nav-logi').classList.add('d-none');
   }
 }
 
@@ -97,7 +99,7 @@ function updateNavbarUser() {
 // Tab navigation
 // =========================================
 function showTab(tab) {
-  ['dashboard','kohteet','tuonti','kayttajat','arkisto','tilitys'].forEach(t => {
+  ['dashboard','kohteet','tuonti','kayttajat','arkisto','tilitys','logi'].forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) el.classList.toggle('d-none', t !== tab);
   });
@@ -107,6 +109,7 @@ function showTab(tab) {
   if (map[tab] !== undefined && navLinks[map[tab]]) navLinks[map[tab]].classList.add('active');
   if (tab === 'kayttajat' && currentUser?.role === 'admin') loadUsers();
   if (tab === 'arkisto') renderArchiveTable(allArchived);
+  if (tab === 'logi' && currentUser?.role === 'admin') loadLogi();
 }
 
 // =========================================
@@ -882,6 +885,41 @@ async function importExcel() {
     showToast('Tuotu ' + data.count + ' kohdetta!', 'success');
   } catch (e) {
     resultEl.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i>' + esc(e.message) + '</div>';
+  }
+}
+
+// =========================================
+// Audit Log
+// =========================================
+async function loadLogi() {
+  const tbody = document.getElementById('logi-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ladataan...</td></tr>';
+  try {
+    const res = await fetch('/api/logi');
+    if (!res.ok) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Virhe ladattaessa lokia</td></tr>'; return; }
+    const rows = await res.json();
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Ei merkintöjä</td></tr>';
+      return;
+    }
+    const targetLabel = { property: 'Kohde', user: 'Käyttäjä', import: 'Import' };
+    tbody.innerHTML = rows.map(r => {
+      const ts = r.ts ? r.ts.replace('T', ' ').substring(0, 19) : '–';
+      const badge = r.target_type
+        ? `<span class="badge bg-secondary">${targetLabel[r.target_type] || r.target_type}</span>`
+        : '';
+      return `<tr>
+        <td class="text-muted small">${ts}</td>
+        <td><strong>${r.username || '–'}</strong></td>
+        <td>${r.action || '–'}</td>
+        <td>${badge}</td>
+        <td class="text-muted">${r.target_id != null ? r.target_id : ''}</td>
+        <td class="text-muted small">${r.details || ''}</td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Virhe: ' + e.message + '</td></tr>';
   }
 }
 

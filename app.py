@@ -120,6 +120,19 @@ def migrate_db():
         ('avainten_luovutettu_lkm', 'INTEGER'),
         ('arkistoitu', 'INTEGER DEFAULT 0'),
     ]
+    # Ensure audit_log table exists (migration for existing databases)
+    conn = get_db()
+    try:
+        if USE_PG:
+            with conn.cursor() as cur:
+                cur.execute('CREATE TABLE IF NOT EXISTS audit_log (id SERIAL PRIMARY KEY, ts TEXT NOT NULL, user_id INTEGER, username TEXT, action TEXT NOT NULL, target_type TEXT, target_id INTEGER, details TEXT)')
+            conn.commit()
+        else:
+            conn.execute('CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT NOT NULL, user_id INTEGER, username TEXT, action TEXT NOT NULL, target_type TEXT, target_id INTEGER, details TEXT)')
+            conn.commit()
+    except Exception:
+        pass
+    conn.close()
     conn = get_db()
     for col, col_type in new_cols:
         try:
@@ -174,6 +187,7 @@ def init_db():
         with conn.cursor() as cur:
             cur.execute(f'CREATE TABLE IF NOT EXISTS properties ({base_cols.format(pk="SERIAL PRIMARY KEY")})')
             cur.execute(f'CREATE TABLE IF NOT EXISTS users ({users_cols.format(pk="SERIAL PRIMARY KEY")})')
+            cur.execute('CREATE TABLE IF NOT EXISTS audit_log (id SERIAL PRIMARY KEY, ts TEXT NOT NULL, user_id INTEGER, username TEXT, action TEXT NOT NULL, target_type TEXT, target_id INTEGER, details TEXT)')
         conn.commit()
         count = execute_scalar(conn, 'SELECT COUNT(*) FROM users')
         if count == 0:
@@ -184,6 +198,7 @@ def init_db():
     else:
         conn.execute(f'CREATE TABLE IF NOT EXISTS properties ({base_cols.format(pk="INTEGER PRIMARY KEY AUTOINCREMENT")})')
         conn.execute(f'CREATE TABLE IF NOT EXISTS users ({users_cols.format(pk="INTEGER PRIMARY KEY AUTOINCREMENT")})')
+        conn.execute('CREATE TABLE IF NOT EXISTS audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT NOT NULL, user_id INTEGER, username TEXT, action TEXT NOT NULL, target_type TEXT, target_id INTEGER, details TEXT)')
         conn.commit()
         count = execute_scalar(conn, 'SELECT COUNT(*) FROM users')
         if count == 0:
@@ -192,6 +207,23 @@ def init_db():
             conn.commit()
     conn.close()
     migrate_db()
+
+# ── Audit log ────────────────────────────────────────────────────────────────
+def log_action(action, target_type=None, target_id=None, details=None):
+    """Write an audit log entry for the current session user."""
+    try:
+        user_id  = session.get('user_id')
+        username = session.get('fullname') or session.get('username') or 'tuntematon'
+        ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        conn = get_db()
+        p = placeholder()
+        execute_write(conn,
+            f'INSERT INTO audit_log (ts, user_id, username, action, target_type, target_id, details) '
+            f'VALUES ({p},{p},{p},{p},{p},{p},{p})',
+            (ts, user_id, username, action, target_type, target_id, details))
+        conn.close()
+    except Exception as e:
+        app.logger.error(f'log_action error: {e}')
 
 # ── Auth decorators ──────────────────────────────────────────────────────────
 def login_required(f):
@@ -234,11 +266,13 @@ def api_login():
     session['username'] = row['username']
     session['fullname'] = row['fullname']
     session['role'] = row['role']
+    log_action('Kirjautui sisään')
     return jsonify({'id': row['id'], 'username': row['username'],
                     'fullname': row['fullname'], 'role': row['role']})
 
 @app.route('/api/logout', methods=['POST'])
 def api_logout():
+    log_action('Kirjautui ulos')
     session.clear()
     return jsonify({'message': 'Kirjauduttu ulos'})
 
@@ -307,6 +341,7 @@ def create_user():
             'INSERT INTO users (username,fullname,password_hash,role,active,created) VALUES (?,?,?,?,?,?)',
             (username, fullname, generate_password_hash(password), role, active, datetime.now().strftime('%Y-%m-%d')))
     conn.commit(); conn.close()
+    log_action('Loi uuden käyttäjän', 'user', new_id, username)
     return jsonify({'id': new_id, 'message': 'Käyttäjä luotu'}), 201
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
@@ -340,6 +375,7 @@ def update_user(user_id):
     conn.commit(); conn.close()
     if user_id == session.get('user_id'):
         session['username'] = username; session['fullname'] = fullname; session['role'] = role
+    log_action('Muokkasi käyttäjää', 'user', user_id, username)
     return jsonify({'message': 'Käyttäjä päivitetty'})
 
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
@@ -351,6 +387,7 @@ def delete_user(user_id):
     conn = get_db()
     execute_write(conn, f'DELETE FROM users WHERE id = {p}', (user_id,))
     conn.commit(); conn.close()
+    log_action('Poisti käyttäjän', 'user', user_id)
     return jsonify({'message': 'Käyttäjä poistettu'})
 
 # ── Stats ────────────────────────────────────────────────────────────────────
@@ -461,6 +498,7 @@ def create_property():
     conn = get_db()
     new_id = execute_write(conn, sql, values)
     conn.commit(); conn.close()
+    log_action('Lisäsi kohteen', 'property', new_id, data.get('kohde_osoite'))
     return jsonify({'id': new_id, 'message': 'Luotu onnistuneesti'}), 201
 
 @app.route('/api/properties/<int:prop_id>', methods=['PUT'])
@@ -479,6 +517,7 @@ def update_property(prop_id):
     conn = get_db()
     execute_write(conn, sql, values)
     conn.commit(); conn.close()
+    log_action('Muokkasi kohdetta', 'property', prop_id)
     return jsonify({'message': 'Päivitetty onnistuneesti'})
 
 @app.route('/api/properties/<int:prop_id>/archive', methods=['PUT'])
@@ -490,6 +529,7 @@ def archive_property(prop_id):
         execute_write(conn, f'UPDATE properties SET arkistoitu = 1, paivitetty = {p} WHERE id = {p}',
                       (datetime.now().isoformat(), prop_id))
         conn.commit(); conn.close()
+        log_action('Arkistoi kohteen', 'property', prop_id)
         return jsonify({'message': 'Kohde arkistoitu'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -503,6 +543,7 @@ def restore_property(prop_id):
         execute_write(conn, f'UPDATE properties SET arkistoitu = 0, paivitetty = {p} WHERE id = {p}',
                       (datetime.now().isoformat(), prop_id))
         conn.commit(); conn.close()
+        log_action('Palautti kohteen arkistosta', 'property', prop_id)
         return jsonify({'message': 'Kohde palautettu'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -515,6 +556,7 @@ def delete_property(prop_id):
         conn = get_db()
         execute_write(conn, f'DELETE FROM properties WHERE id = {p}', (prop_id,))
         conn.commit(); conn.close()
+        log_action('Poisti kohteen pysyvästi', 'property', prop_id)
         return jsonify({'message': 'Poistettu pysyvästi'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -596,6 +638,7 @@ def import_excel():
         finally:
             conn.close()
 
+    log_action('Toi Excel-tiedoston', 'import', None, f'{count} kohdetta')
     result = {'message': f'Tuotu {count} kohdetta', 'count': count}
     if errors: result['errors'] = errors
     return jsonify(result)
@@ -750,6 +793,20 @@ def tilitysraportti():
     return send_file(output,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         as_attachment=True, download_name=filename)
+
+
+# ── Audit log API ─────────────────────────────────────────────────────────────
+@app.route('/api/logi')
+@admin_required
+def get_logi():
+    p = placeholder()
+    limit = min(int(request.args.get('limit', 200)), 1000)
+    conn = get_db()
+    rows = execute_query(conn,
+        f'SELECT id, ts, username, action, target_type, target_id, details '
+        f'FROM audit_log ORDER BY id DESC LIMIT {p}', (limit,))
+    conn.close()
+    return jsonify(rows)
 
 if __name__ == '__main__':
     init_db()
