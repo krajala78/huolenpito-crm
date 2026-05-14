@@ -125,6 +125,7 @@ body {
 .badge-toggle-no  { background-color: #e5e7eb; color: #6b7280; }
 
 /* Stat chip filter active state */
+#kohteet-stats-chips { align-self: stretch; }
 .ks-chip { transition: box-shadow .15s, background .15s; align-self: stretch; }
 .ks-chip:hover { box-shadow: 0 0 0 2px #93c5fd; }
 .ks-chip-active { background: #eff6ff !important; box-shadow: 0 0 0 2px #3b82f6 !important; }
