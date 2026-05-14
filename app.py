@@ -221,6 +221,7 @@ def log_action(action, target_type=None, target_id=None, details=None):
             f'INSERT INTO audit_log (ts, user_id, username, action, target_type, target_id, details) '
             f'VALUES ({p},{p},{p},{p},{p},{p},{p})',
             (ts, user_id, username, action, target_type, target_id, details))
+        conn.commit()
         conn.close()
     except Exception as e:
         app.logger.error(f'log_action error: {e}')
