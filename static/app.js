@@ -708,10 +708,11 @@ function filterProperties() {
   if (vuokraBox) vuokraBox.classList.toggle('d-none', !(currentUser?.role === 'admin'));
   if (vuokraBox) vuokraBox.classList.toggle('d-flex', currentUser?.role === 'admin');
   // Päivitä tilastolaatikot filtteröidyn listan mukaan
-  var ksTotal      = colFiltered.length;
-  var ksVuokrattu  = colFiltered.filter(function(p){ return (p.vuokrattu||'').toLowerCase() === 'kyllä'; }).length;
-  var ksVapaat     = ksTotal - ksVuokrattu;
-  var ksMarkkinalla = colFiltered.filter(function(p){ return (p.vuokramarkkinalla||'').toLowerCase() === 'kyllä'; }).length;
+  var ksBase        = applyColFiltersToList(filtered);
+  var ksTotal       = ksBase.length;
+  var ksVuokrattu   = ksBase.filter(function(p){ return (p.vuokrattu||'').toLowerCase() === 'kyllä'; }).length;
+  var ksVapaat      = ksTotal - ksVuokrattu;
+  var ksMarkkinalla = ksBase.filter(function(p){ return (p.vuokramarkkinalla||'').toLowerCase() === 'kyllä'; }).length;
   var el = document.getElementById('ks-total');      if (el) el.textContent = ksTotal;
   el = document.getElementById('ks-vuokrattu');      if (el) el.textContent = ksVuokrattu;
   el = document.getElementById('ks-vapaat');         if (el) el.textContent = ksVapaat;
