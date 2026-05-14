@@ -125,6 +125,8 @@ async function loadStats() {
     if (huolEl) huolEl.textContent = d.huolenpidossa ?? '-';
     const laskEl = document.getElementById('stat-laskutus');
     if (laskEl) laskEl.textContent = formatEur(d.laskutus_sum);
+    const tilitEl = document.getElementById('stat-tilitykset');
+    if (tilitEl) tilitEl.textContent = formatEur(d.vuokra_sum);
     // Näytä admin-kortit vain adminille
     const isAdmin = currentUser?.role === 'admin';
     document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('d-none', !isAdmin));
