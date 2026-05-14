@@ -169,8 +169,8 @@ async function loadProperties() {
     const res = await fetch('/api/properties');
     if (res.status === 401) { showLoginOverlay(); return; }
     allProperties = await res.json();
-    renderTable(allProperties);
     populateColFilterSelects(allProperties);
+    filterProperties(); // säilyttää aktiiviset filtterit
   } catch (e) { showToast('Kohteiden lataus epäonnistui', 'danger'); }
 }
 
@@ -346,12 +346,18 @@ async function loadFilters() {
     }
     const vSel = document.getElementById('filter-vastuuhenkilo');
     if (vSel) {
+      const prevVal = vSel.value; // tallenna nykyinen valinta
       while (vSel.options.length > 1) vSel.remove(1);
       d.vastuuhenkilot.forEach(v => {
         const opt = document.createElement('option');
         opt.value = v; opt.textContent = v; vSel.appendChild(opt);
       });
+      if (prevVal) vSel.value = prevVal; // palauta valinta
     }
+    // Palauta kaupunki-valintaruutujen tila selectedKaupungit-listasta
+    document.querySelectorAll('#kaupunki-menu input[type=checkbox]').forEach(cb => {
+      cb.checked = selectedKaupungit.includes(cb.value);
+    });
 
   } catch (e) { /* silent */ }
 }
