@@ -681,19 +681,21 @@ function filterProperties() {
   const search    = (document.getElementById('search-input')?.value || '').toLowerCase();
   const vuokrattu = document.getElementById('filter-vuokrattu')?.value || '';
   const vastuu    = document.getElementById('filter-vastuuhenkilo')?.value || '';
-  const filtered  = allProperties.filter(p => {
+  const baseFiltered = allProperties.filter(p => {
     const ms = !search || [p.kohde_osoite,p.omistaja,p.vuokralaisen_nimi,p.vuokranantajan_kontakti,
       p.kaupunki,p.tyyppi,p.asunnon_tila,p.vastuuhenkilo,p.postinumero,p.lisatietoja]
       .some(v => v && v.toLowerCase().includes(search));
     const mv = !vuokrattu || (p.vuokrattu || '').toLowerCase() === vuokrattu.toLowerCase();
     const mk = selectedKaupungit.length === 0 || selectedKaupungit.includes(p.kaupunki);
     const mh = !vastuu || p.vastuuhenkilo === vastuu;
+    return ms && mv && mk && mh;
+  });
+  const filtered = baseFiltered.filter(p => {
     const isVuokrattu = (p.vuokrattu || '').toLowerCase() === 'kyllä';
-    const mc = !activeChip
+    return !activeChip
       || (activeChip === 'vuokrattu' && isVuokrattu)
       || (activeChip === 'vapaat' && !isVuokrattu)
       || (activeChip === 'markkinalla' && (p.vuokramarkkinalla || '').toLowerCase() === 'kyllä');
-    return ms && mv && mk && mh && mc;
   });
   var colFiltered = applyColFiltersToList(filtered);
   lastFiltered = colFiltered;
@@ -708,7 +710,7 @@ function filterProperties() {
   if (vuokraBox) vuokraBox.classList.toggle('d-none', !(currentUser?.role === 'admin'));
   if (vuokraBox) vuokraBox.classList.toggle('d-flex', currentUser?.role === 'admin');
   // Päivitä tilastolaatikot filtteröidyn listan mukaan
-  var ksBase        = applyColFiltersToList(filtered);
+  var ksBase        = applyColFiltersToList(baseFiltered);
   var ksTotal       = ksBase.length;
   var ksVuokrattu   = ksBase.filter(function(p){ return (p.vuokrattu||'').toLowerCase() === 'kyllä'; }).length;
   var ksVapaat      = ksTotal - ksVuokrattu;
