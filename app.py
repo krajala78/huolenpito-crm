@@ -119,6 +119,7 @@ def migrate_db():
         ('avainten_lkm', 'INTEGER'),
         ('avainten_luovutettu_lkm', 'INTEGER'),
         ('arkistoitu', 'INTEGER DEFAULT 0'),
+        ('vuokralainen_historia', 'TEXT'),
     ]
     # Ensure audit_log table exists (migration for existing databases)
     conn = get_db()
@@ -811,6 +812,39 @@ def get_logi():
         f'FROM audit_log ORDER BY id DESC LIMIT {p}', (limit,))
     conn.close()
     return jsonify(rows)
+
+@app.route('/api/properties/<int:prop_id>/uusi-vuokralainen', methods=['POST'])
+@login_required
+def uusi_vuokralainen(prop_id):
+    import json as _json
+    p = placeholder()
+    conn = get_db()
+    prop = execute_one(conn, f'SELECT * FROM properties WHERE id = {p}', (prop_id,))
+    if not prop:
+        conn.close()
+        return jsonify({'error': 'Kohde ei löydy'}), 404
+    tenant_fields = [
+        'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti',
+        'vuokra_alussa','vuokra_tanaan','vesimaksut','muut_maksut','saunamaksut',
+        'kokonaisumma','vuokravakuus','vakuuden_maksupv','kenen_tililla_vakuus',
+        'avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm',
+    ]
+    current = {f: prop.get(f) for f in tenant_fields}
+    current['tallennettu'] = datetime.now().strftime('%Y-%m-%d')
+    try:
+        historia = _json.loads(prop.get('vuokralainen_historia') or '[]')
+    except Exception:
+        historia = []
+    historia.insert(0, current)
+    historia = historia[:3]
+    NOW = 'NOW()' if USE_PG else "datetime('now')"
+    nulls = ', '.join(f'{f} = NULL' for f in tenant_fields)
+    sql = f'UPDATE properties SET vuokralainen_historia = {p}, {nulls}, paivitetty = {NOW} WHERE id = {p}'
+    execute_write(conn, sql, (_json.dumps(historia, ensure_ascii=False), prop_id))
+    conn.commit()
+    updated = execute_one(conn, f'SELECT * FROM properties WHERE id = {p}', (prop_id,))
+    conn.close()
+    return jsonify(updated)
 
 if __name__ == '__main__':
     init_db()
