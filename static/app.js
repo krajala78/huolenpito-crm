@@ -644,6 +644,7 @@ function clearColFilters() {
     sel.value = '';
   });
   filterProperties();
+  _refreshOtherColFilters(null);
 }
 function populateColFilterSelects(props) {
   _colFilterBaseProps = props;
@@ -682,6 +683,29 @@ function applyColFilter(input) {
   var val = input.value.trim();
   if (val) { colFilters[col] = new Set([val]); } else { delete colFilters[col]; }
   filterProperties();
+  _refreshOtherColFilters(col);
+}
+
+function _refreshOtherColFilters(changedCol) {
+  var filtered = applyColFiltersToList(allProperties);
+  document.querySelectorAll('#col-filter-row select[data-col]').forEach(function(sel) {
+    var c = sel.getAttribute('data-col');
+    if (c === changedCol) return;
+    var current = sel.value;
+    var seen = {};
+    filtered.forEach(function(p) {
+      var v = p[c];
+      if (v != null && v !== '') seen[String(v)] = true;
+    });
+    var sorted = Object.keys(seen).sort(function(a, b) { return a.localeCompare(b, 'fi'); });
+    sel.innerHTML = '<option value="">Kaikki</option>';
+    sorted.forEach(function(v) {
+      var opt = document.createElement('option');
+      opt.value = v; opt.textContent = v;
+      if (v === current) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  });
 }
 
 function applyColFiltersToList(props) {
