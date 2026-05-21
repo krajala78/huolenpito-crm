@@ -1292,15 +1292,18 @@ function renderTenantHistory(p) {
 }
 
 async function addNewTenant() {
-  const propId = document.getElementById('edit-id')?.value;
+  const propId = editingId;
   if (!propId) return;
   if (!confirm('Arkistoidaanko nykyiset vuokralaistiedot ja tyhjennetään kentät uutta vuokralaista varten?')) return;
   try {
     const res = await fetch('/api/properties/' + propId + '/uusi-vuokralainen', { method: 'POST' });
     if (!res.ok) throw new Error('Virhe: ' + res.status);
     const updated = await res.json();
-    // Re-open modal with updated data
-    openEditModal(updated);
+    // Update allProperties cache
+    const idx = allProperties.findIndex(x => x.id === updated.id);
+    if (idx !== -1) allProperties[idx] = updated;
+    // Re-open modal with cleared data
+    openEditModal(updated.id);
   } catch(e) {
     alert('Virhe vuokralaistietojen arkistoinnissa: ' + e.message);
   }
