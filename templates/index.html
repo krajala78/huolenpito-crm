@@ -595,6 +595,14 @@
           <div class="form-section mb-4">
             <h6 class="form-section-title"><i class="bi bi-people me-2 text-primary"></i>Vuokralaistiedot</h6>
             <div class="row g-3">
+              <!-- Vuokralainen historia -->
+              <div class="col-12" id="tenant-history-section"></div>
+              <div class="col-12" id="new-tenant-btn-row">
+                <button type="button" class="btn btn-outline-warning btn-sm" onclick="addNewTenant()">
+                  <i class="bi bi-arrow-repeat me-1"></i>Lisää uusi vuokralainen
+                </button>
+                <span class="text-muted small ms-2">Nykyiset vuokralaistiedot tallentuvat historiaan (max 3 kpl)</span>
+              </div>
               <div class="col-12 col-md-4"><label class="form-label">Vuokralaisen nimi</label><input type="text" class="form-control" id="f-vuokralaisen_nimi"></div>
               <div class="col-12 col-md-4"><label class="form-label">Vuokralaisen puhelin</label><input type="text" class="form-control" id="f-vuokralaisen_puhelin"></div>
               <div class="col-12 col-md-4"><label class="form-label">Vuokralaisen sähköposti</label><input type="email" class="form-control" id="f-vuokralaisen_sahkoposti"></div>
