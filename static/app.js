@@ -1266,7 +1266,9 @@ function renderTenantHistory(p) {
     kokonaisumma: 'Kokonaissumma (€)', vuokravakuus: 'Vakuus (€)',
     vakuuden_maksupv: 'Vakuuden maksupv', kenen_tililla_vakuus: 'Vakuus tilillä',
     avaimet_luovutettu: 'Avaimet luovutettu', avainten_lkm: 'Avainten lkm',
-    avainten_luovutettu_lkm: 'Luovutettu lkm'
+    avainten_luovutettu_lkm: 'Luovutettu lkm',
+    vuokrasopimus_alkaen: 'Sopimus alkaen',
+    vuokrasopimus_paattyy: 'Sopimus päättyy'
   };
 
   let html = '';
@@ -1307,7 +1309,9 @@ async function addNewTenant() {
       'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti',
       'vuokra_alussa','vuokra_tanaan','vesimaksut','muut_maksut','saunamaksut',
       'kokonaisumma','vuokravakuus','vakuuden_maksupv','kenen_tililla_vakuus',
-      'avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm'
+      'avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm',
+      'vuokrasopimus_alkaen',
+      'vuokrasopimus_paattyy'
     ];
     tenantFields.forEach(function(f) {
       const el = document.getElementById('f-' + f);
