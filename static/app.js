@@ -986,6 +986,7 @@ function openAddModal() {
   document.getElementById('modal-title').innerHTML = '<i class="bi bi-house-add me-2"></i>Lisää uusi kohde';
   document.getElementById('property-form').reset();
   document.getElementById('f-id').value = '';
+  var ths = document.getElementById('tenant-history-section'); if (ths) ths.innerHTML = '';
   showTab('kohteet');
   new bootstrap.Modal(document.getElementById('propertyModal')).show();
 }
