@@ -230,9 +230,7 @@
         <!-- Pöytäkonenäkymä (>= md) -->
         <div class="table-responsive d-none d-md-block" style="max-height:75vh;overflow:auto">
           <table class="table table-hover table-sm mb-0" id="properties-table" style="min-width:3200px;font-size:13px">
-            <thead class="table-light sticky-top">
-              <tr>
-                <th style="min-width:200px;position:sticky;left:0;z-index:3;background:#f8f9fa;border-right:2px solid #dee2e6">Kohde / Osoite</th>
+            <th style="min-width:200px;position:sticky;left:0;z-index:3;background:#f8f9fa;border-right:2px solid #dee2e6">Kohde / Osoite</th>
                 <th style="min-width:160px">Omistaja</th>
                 <th style="min-width:150px">VRA kontakti</th>
                 <th style="min-width:170px">VRA sähköposti</th>
@@ -240,24 +238,28 @@
                 <th style="min-width:150px">Tyyppi</th>
                 <th class="text-center" style="min-width:80px">Koko m²</th>
                 <th style="min-width:120px">Kaupunki</th>
-                <th style="min-width:120px">Vastuuhenkilö</th>
+                <th style="min-width:120px">Postinumero</th>
                 <th style="min-width:130px">Huolenpitosopimus</th>
                 <th class="text-center" style="min-width:100px">Huolenpidossa</th>
                 <th class="text-center" style="min-width:100px">Vuokrauksessa</th>
                 <th style="min-width:130px">Vuokravälittäjä</th>
+                <th style="min-width:120px">Vastuuhenkilö</th>
+                <th style="min-width:150px">Laskutusperuste</th>
+                <th style="min-width:130px">Laskutuksen status</th>
+                <th style="min-width:130px">Vuokratilitykset</th>
+                <th style="min-width:120px">Vuokras. alkaen</th>
+                <th style="min-width:120px">Vuokras. päättyy</th>
                 <th class="text-center" style="min-width:90px">Vuokrattu</th>
                 <th class="text-center" style="min-width:140px">Vuokramarkkinalla</th>
                 <th style="min-width:140px">Asunnon kunto</th>
                 <th style="min-width:160px">Vuokralainen</th>
                 <th style="min-width:130px">Vuokr. puhelin</th>
                 <th style="min-width:170px">Vuokr. sähköposti</th>
-                <th style="min-width:120px">Vuokras. alkaen</th>
-                <th style="min-width:120px">Vuokras. päättyy</th>
                 <th class="text-end" style="min-width:110px">Vuokra alussa</th>
                 <th class="text-end" style="min-width:110px">Vuokra tänään</th>
                 <th class="text-end" style="min-width:100px">Vesimaksut</th>
-                <th style="min-width:110px">Saunamaksut</th>
                 <th style="min-width:120px">Muut maksut</th>
+                <th style="min-width:110px">Saunamaksut</th>
                 <th class="text-end" style="min-width:110px">Kokonaisumma</th>
                 <th class="text-end" style="min-width:100px">Vuokravakuus</th>
                 <th style="min-width:120px">Vakuuden maksupv</th>
@@ -270,14 +272,8 @@
                 <th class="text-end" style="min-width:110px">Välityshinta</th>
                 <th style="min-width:140px">Välitys lask. pvm</th>
                 <th style="min-width:120px">Takuupalvelu</th>
-                <th style="min-width:130px">Vuokratilitykset</th>
-                <th style="min-width:150px">Laskutusperuste</th>
-                <th style="min-width:130px">Laskutuksen status</th>
                 <th style="min-width:200px">Lisätietoja</th>
                 <th class="text-center" style="min-width:90px;position:sticky;right:0;z-index:3;background:#f8f9fa;border-left:2px solid #dee2e6">Toiminnot</th>
-              </tr>
-              <tr id="col-filter-row" class="d-none">
-                <th style="position:sticky;left:0;z-index:3;background:#f0f4ff;border-right:2px solid #dee2e6;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="kohde_osoite" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:140px;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="omistaja" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokranantajan_kontakti" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokranantajan_sahkoposti" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
@@ -285,24 +281,27 @@
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="tyyppi" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="koko" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="kaupunki" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vastuuhenkilo" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="huolenpitosopimus" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="huolenpidossa" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrauksessa" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokravalittaja" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vastuuhenkilo" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="laskutusperuste" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="laskutuksen_status" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokratilitykset" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrasopimus_alkaen" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrasopimus_paattyy" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrattu" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokramarkkinalla" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="asunnon_tila" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokralaisen_nimi" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokralaisen_puhelin" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokralaisen_sahkoposti" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrasopimus_alkaen" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokrasopimus_paattyy" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokra_alussa" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokra_tanaan" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vesimaksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="saunamaksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="muut_maksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="saunamaksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="kokonaisumma" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokravakuus" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vakuuden_maksupv" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
@@ -315,9 +314,6 @@
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="valityshinta" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="valitys_laskutettu_pvm" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="takuupalvelu" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokratilitykset" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="laskutusperuste" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="laskutuksen_status" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="lisatietoja" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="position:sticky;right:0;z-index:3;background:#f0f4ff;border-left:2px solid #dee2e6;padding:4px"><button class="btn btn-outline-secondary btn-sm w-100" onclick="clearColFilters()" title="Tyhjennä sarakesuodattimet" style="font-size:11px"><i class="bi bi-x-circle"></i></button></th>
               </tr>
