@@ -650,6 +650,24 @@ function clearColFilters() {
 
 function populateColFilterSelects(props) {
   _colFilterBaseProps = props;
+  document.querySelectorAll('#col-filter-row select[data-col]').forEach(function(sel) {
+    var col = sel.getAttribute('data-col');
+    var current = sel.value;
+    var seen = {};
+    props.forEach(function(p) {
+      var v = p[col];
+      if (v != null && v !== '') seen[String(v)] = true;
+    });
+    var sorted = Object.keys(seen).sort(function(a, b) { return a.localeCompare(b, 'fi'); });
+    sel.innerHTML = '<option value="">Kaikki</option>';
+    sorted.forEach(function(v) {
+      var opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      if (v === current) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  });
 }
 
 function _rebuildColFilterSelects(baseProps) {
