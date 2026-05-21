@@ -253,8 +253,8 @@
                 <th class="text-end" style="min-width:110px">Vuokra alussa</th>
                 <th class="text-end" style="min-width:110px">Vuokra tänään</th>
                 <th class="text-end" style="min-width:100px">Vesimaksut</th>
-                <th style="min-width:120px">Muut maksut</th>
                 <th style="min-width:110px">Saunamaksut</th>
+                <th style="min-width:120px">Muut maksut</th>
                 <th class="text-end" style="min-width:110px">Kokonaisumma</th>
                 <th class="text-end" style="min-width:100px">Vuokravakuus</th>
                 <th style="min-width:120px">Vakuuden maksupv</th>
@@ -298,8 +298,8 @@
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokra_alussa" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokra_tanaan" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vesimaksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
-                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="muut_maksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="saunamaksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
+                <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="muut_maksut" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="kokonaisumma" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vuokravakuus" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
                 <th style="background:#f0f4ff;padding:4px"><button class="col-filter-btn btn btn-sm btn-outline-secondary w-100" data-col="vakuuden_maksupv" onclick="openColFilterMenu(this)" style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Kaikki</button></th>
@@ -614,8 +614,8 @@
               <div class="col-6 col-md-2"><label class="form-label">Vuokra sop. alussa (€)</label><input type="number" class="form-control" id="f-vuokra_alussa" step="0.01" min="0"></div>
               <div class="col-6 col-md-2"><label class="form-label">Vuokra tänään (€)</label><input type="number" class="form-control" id="f-vuokra_tanaan" step="0.01" min="0" oninput="recalcKokonaisumma()"></div>
               <div class="col-6 col-md-2"><label class="form-label">Vesimaksut (€)</label><input type="number" class="form-control" id="f-vesimaksut" step="0.01" min="0" oninput="recalcKokonaisumma()"></div>
-              <div class="col-6 col-md-2"><label class="form-label">Muut maksut (€)</label><input type="text" class="form-control" id="f-muut_maksut" placeholder="" oninput="recalcKokonaisumma()"></div>
               <div class="col-6 col-md-2"><label class="form-label">Saunamaksut (€)</label><input type="text" class="form-control" id="f-saunamaksut" placeholder="" oninput="recalcKokonaisumma()"></div>
+              <div class="col-6 col-md-2"><label class="form-label">Muut maksut (€)</label><input type="text" class="form-control" id="f-muut_maksut" placeholder="" oninput="recalcKokonaisumma()"></div>
               <div class="col-6 col-md-2"><label class="form-label">Kokonaissumma (€)</label><input type="number" class="form-control" id="f-kokonaisumma" step="0.01" min="0" readonly tabindex="-1" style="background:#f1f3f5;color:#6c757d;cursor:default"></div>
             </div>
           </div>
