@@ -8,7 +8,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-# ── DB driver selection ──────────────────────────────────────────────────────
+# ââ DB driver selection ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 if DATABASE_URL:
     import psycopg2, psycopg2.extras
@@ -23,41 +23,41 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'valueLKV-secret-key-2024-change-in-production')
 DB_PATH = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'crm.db'))
 
-KUUKAUDET = ['Tammikuu','Helmikuu','Maaliskuu','Huhtikuu','Toukokuu','Kesäkuu',
-             'Heinäkuu','Elokuu','Syyskuu','Lokakuu','Marraskuu','Joulukuu']
+KUUKAUDET = ['Tammikuu','Helmikuu','Maaliskuu','Huhtikuu','Toukokuu','KesÃ¤kuu',
+             'HeinÃ¤kuu','Elokuu','Syyskuu','Lokakuu','Marraskuu','Joulukuu']
 
 EXCEL_TO_DB = {
     'Kohde/Osoite': 'kohde_osoite', 'Omistaja': 'omistaja',
     'Vuokranantajan \nkontakti': 'vuokranantajan_kontakti',
-    'Vuokranantajan \nsähköposti': 'vuokranantajan_sahkoposti',
+    'Vuokranantajan \nsÃ¤hkÃ¶posti': 'vuokranantajan_sahkoposti',
     'Vuokranantajan \npuhelinnumero': 'vuokranantajan_puhelin',
     'Tyyppi': 'tyyppi', 'Koko': 'koko', 'Kaupunki': 'kaupunki',
     'Postinumero': 'postinumero', 'Huolenpito-\nsopimus': 'huolenpitosopimus',
     'Huolen-\npidossa': 'huolenpidossa', 'Vuokrauksessa': 'vuokrauksessa',
-    'Vuokravälittäjä': 'vuokravalittaja', 'Vastuuhenkilö': 'vastuuhenkilo',
-    'Laskutusperuste sis. alv (€/kk)': 'laskutusperuste',
+    'VuokravÃ¤littÃ¤jÃ¤': 'vuokravalittaja', 'VastuuhenkilÃ¶': 'vastuuhenkilo',
+    'Laskutusperuste sis. alv (â¬/kk)': 'laskutusperuste',
     'Huolenpidon\nlaskutuksen status': 'laskutuksen_status',
     'Vuokratilitykset': 'vuokratilitykset',
     'Vuokrasopimus alkaen': 'vuokrasopimus_alkaen',
-    'Vuokrasopimus päättyy': 'vuokrasopimus_paattyy',
+    'Vuokrasopimus pÃ¤Ã¤ttyy': 'vuokrasopimus_paattyy',
     'Vuokrattu': 'vuokrattu', 'Vuokra-\nmarkkinalla': 'vuokramarkkinalla',
     'Asunnon tila': 'asunnon_tila', 'Vuokralaisen nimi': 'vuokralaisen_nimi',
     'Vuokralaisen puhelinnumero': 'vuokralaisen_puhelin',
-    'Vuokralaisen sähköposti': 'vuokralaisen_sahkoposti',
-    'Vuokran määrä sop. alkamisessa': 'vuokra_alussa',
-    'Vuokran määrä (tänään)': 'vuokra_tanaan',
+    'Vuokralaisen sÃ¤hkÃ¶posti': 'vuokralaisen_sahkoposti',
+    'Vuokran mÃ¤Ã¤rÃ¤ sop. alkamisessa': 'vuokra_alussa',
+    'Vuokran mÃ¤Ã¤rÃ¤ (tÃ¤nÃ¤Ã¤n)': 'vuokra_tanaan',
     'Vesimaksut': 'vesimaksut', 'Muut maksut': 'muut_maksut',
     'Saunamaksut': 'saunamaksut', 'Kokonaisumma': 'kokonaisumma',
     'Vuokravakuus': 'vuokravakuus', 'Vakuuden maksupv.': 'vakuuden_maksupv',
-    'Kenen tilillä vakuus': 'kenen_tililla_vakuus',
+    'Kenen tilillÃ¤ vakuus': 'kenen_tililla_vakuus',
     'Avaimet luovutettu': 'avaimet_luovutettu',
     'Vesimittari\nluettu': 'vesimittari_luettu',
-    'Välitys\nlaskutettu': 'valitys_laskutettu',
-    'Välityshinta\nsis. alv': 'valityshinta',
-    'Lisätietoja': 'lisatietoja',
+    'VÃ¤litys\nlaskutettu': 'valitys_laskutettu',
+    'VÃ¤lityshinta\nsis. alv': 'valityshinta',
+    'LisÃ¤tietoja': 'lisatietoja',
 }
 
-# ── DB helpers ───────────────────────────────────────────────────────────────
+# ââ DB helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def get_db():
     if USE_PG:
         return psycopg2.connect(DATABASE_URL)
@@ -110,7 +110,7 @@ def execute_write(conn, sql, params=None):
         cur = conn.execute(sql, params or [])
         return cur.lastrowid
 
-# ── DB init & migration ──────────────────────────────────────────────────────
+# ââ DB init & migration ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def migrate_db():
     """Add new columns to existing tables if they don't exist."""
     new_cols = [
@@ -194,7 +194,7 @@ def init_db():
         if count == 0:
             execute_write(conn,
                 'INSERT INTO users (username,fullname,password_hash,role,active,created) VALUES (%s,%s,%s,%s,%s,%s)',
-                ('admin','Pääkäyttäjä',generate_password_hash('admin123'),'admin',1,datetime.now().strftime('%Y-%m-%d')))
+                ('admin','PÃ¤Ã¤kÃ¤yttÃ¤jÃ¤',generate_password_hash('admin123'),'admin',1,datetime.now().strftime('%Y-%m-%d')))
             conn.commit()
     else:
         conn.execute(f'CREATE TABLE IF NOT EXISTS properties ({base_cols.format(pk="INTEGER PRIMARY KEY AUTOINCREMENT")})')
@@ -204,12 +204,12 @@ def init_db():
         count = execute_scalar(conn, 'SELECT COUNT(*) FROM users')
         if count == 0:
             conn.execute('INSERT INTO users (username,fullname,password_hash,role,active,created) VALUES (?,?,?,?,?,?)',
-                ('admin','Pääkäyttäjä',generate_password_hash('admin123'),'admin',1,datetime.now().strftime('%Y-%m-%d')))
+                ('admin','PÃ¤Ã¤kÃ¤yttÃ¤jÃ¤',generate_password_hash('admin123'),'admin',1,datetime.now().strftime('%Y-%m-%d')))
             conn.commit()
     conn.close()
     migrate_db()
 
-# ── Audit log ────────────────────────────────────────────────────────────────
+# ââ Audit log ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def log_action(action, target_type=None, target_id=None, details=None):
     """Write an audit log entry for the current session user."""
     try:
@@ -227,7 +227,7 @@ def log_action(action, target_type=None, target_id=None, details=None):
     except Exception as e:
         app.logger.error(f'log_action error: {e}')
 
-# ── Auth decorators ──────────────────────────────────────────────────────────
+# ââ Auth decorators ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -246,12 +246,12 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
-# ── Pages ────────────────────────────────────────────────────────────────────
+# ââ Pages ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# ── Auth API ─────────────────────────────────────────────────────────────────
+# ââ Auth API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.get_json()
@@ -262,13 +262,13 @@ def api_login():
     row = execute_one(conn, f'SELECT * FROM users WHERE username = {p} AND active = 1', (username,))
     conn.close()
     if not row or not check_password_hash(row['password_hash'], password):
-        return jsonify({'error': 'Väärä käyttäjätunnus tai salasana'}), 401
+        return jsonify({'error': 'VÃ¤Ã¤rÃ¤ kÃ¤yttÃ¤jÃ¤tunnus tai salasana'}), 401
     session.permanent = True
     session['user_id'] = row['id']
     session['username'] = row['username']
     session['fullname'] = row['fullname']
     session['role'] = row['role']
-    log_action('Kirjautui sisään')
+    log_action('Kirjautui sisÃ¤Ã¤n')
     return jsonify({'id': row['id'], 'username': row['username'],
                     'fullname': row['fullname'], 'role': row['role']})
 
@@ -292,20 +292,20 @@ def api_change_password():
     old_pw = data.get('old_password') or ''
     new_pw = data.get('new_password') or ''
     if len(new_pw) < 4:
-        return jsonify({'error': 'Salasanan on oltava vähintään 4 merkkiä'}), 400
+        return jsonify({'error': 'Salasanan on oltava vÃ¤hintÃ¤Ã¤n 4 merkkiÃ¤'}), 400
     p = placeholder()
     conn = get_db()
     row = execute_one(conn, f'SELECT * FROM users WHERE id = {p}', (session['user_id'],))
     if not row or not check_password_hash(row['password_hash'], old_pw):
         conn.close()
-        return jsonify({'error': 'Nykyinen salasana on väärä'}), 400
+        return jsonify({'error': 'Nykyinen salasana on vÃ¤Ã¤rÃ¤'}), 400
     execute_write(conn, f'UPDATE users SET password_hash = {p} WHERE id = {p}',
                   (generate_password_hash(new_pw), session['user_id']))
     conn.commit()
     conn.close()
     return jsonify({'message': 'Salasana vaihdettu'})
 
-# ── User management API ──────────────────────────────────────────────────────
+# ââ User management API ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/users', methods=['GET'])
 @admin_required
 def get_users():
@@ -324,16 +324,16 @@ def create_user():
     role = data.get('role', 'user')
     active = 1 if data.get('active', True) else 0
     if not username or not fullname:
-        return jsonify({'error': 'Käyttäjätunnus ja nimi ovat pakollisia'}), 400
+        return jsonify({'error': 'KÃ¤yttÃ¤jÃ¤tunnus ja nimi ovat pakollisia'}), 400
     if len(password) < 4:
-        return jsonify({'error': 'Salasanan on oltava vähintään 4 merkkiä'}), 400
+        return jsonify({'error': 'Salasanan on oltava vÃ¤hintÃ¤Ã¤n 4 merkkiÃ¤'}), 400
     if role not in ('admin', 'user'):
         return jsonify({'error': 'Virheellinen rooli'}), 400
     p = placeholder()
     conn = get_db()
     if execute_one(conn, f'SELECT id FROM users WHERE username = {p}', (username,)):
         conn.close()
-        return jsonify({'error': 'Käyttäjätunnus on jo käytössä'}), 409
+        return jsonify({'error': 'KÃ¤yttÃ¤jÃ¤tunnus on jo kÃ¤ytÃ¶ssÃ¤'}), 409
     if USE_PG:
         new_id = execute_write(conn,
             'INSERT INTO users (username,fullname,password_hash,role,active,created) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id',
@@ -343,8 +343,8 @@ def create_user():
             'INSERT INTO users (username,fullname,password_hash,role,active,created) VALUES (?,?,?,?,?,?)',
             (username, fullname, generate_password_hash(password), role, active, datetime.now().strftime('%Y-%m-%d')))
     conn.commit(); conn.close()
-    log_action('Loi uuden käyttäjän', 'user', new_id, username)
-    return jsonify({'id': new_id, 'message': 'Käyttäjä luotu'}), 201
+    log_action('Loi uuden kÃ¤yttÃ¤jÃ¤n', 'user', new_id, username)
+    return jsonify({'id': new_id, 'message': 'KÃ¤yttÃ¤jÃ¤ luotu'}), 201
 
 @app.route('/api/users/<int:user_id>', methods=['PUT'])
 @admin_required
@@ -356,18 +356,18 @@ def update_user(user_id):
     active = 1 if data.get('active', True) else 0
     new_password = data.get('password') or ''
     if not username or not fullname:
-        return jsonify({'error': 'Käyttäjätunnus ja nimi ovat pakollisia'}), 400
+        return jsonify({'error': 'KÃ¤yttÃ¤jÃ¤tunnus ja nimi ovat pakollisia'}), 400
     if role not in ('admin', 'user'):
         return jsonify({'error': 'Virheellinen rooli'}), 400
     p = placeholder()
     conn = get_db()
     if execute_one(conn, f'SELECT id FROM users WHERE username = {p} AND id != {p}', (username, user_id)):
         conn.close()
-        return jsonify({'error': 'Käyttäjätunnus on jo käytössä'}), 409
+        return jsonify({'error': 'KÃ¤yttÃ¤jÃ¤tunnus on jo kÃ¤ytÃ¶ssÃ¤'}), 409
     if new_password:
         if len(new_password) < 4:
             conn.close()
-            return jsonify({'error': 'Salasanan on oltava vähintään 4 merkkiä'}), 400
+            return jsonify({'error': 'Salasanan on oltava vÃ¤hintÃ¤Ã¤n 4 merkkiÃ¤'}), 400
         execute_write(conn,
             f'UPDATE users SET username={p},fullname={p},role={p},active={p},password_hash={p} WHERE id={p}',
             (username, fullname, role, active, generate_password_hash(new_password), user_id))
@@ -377,41 +377,41 @@ def update_user(user_id):
     conn.commit(); conn.close()
     if user_id == session.get('user_id'):
         session['username'] = username; session['fullname'] = fullname; session['role'] = role
-    log_action('Muokkasi käyttäjää', 'user', user_id, username)
-    return jsonify({'message': 'Käyttäjä päivitetty'})
+    log_action('Muokkasi kÃ¤yttÃ¤jÃ¤Ã¤', 'user', user_id, username)
+    return jsonify({'message': 'KÃ¤yttÃ¤jÃ¤ pÃ¤ivitetty'})
 
 @app.route('/api/users/<int:user_id>', methods=['DELETE'])
 @admin_required
 def delete_user(user_id):
     if user_id == session.get('user_id'):
-        return jsonify({'error': 'Et voi poistaa omaa tiliäsi'}), 400
+        return jsonify({'error': 'Et voi poistaa omaa tiliÃ¤si'}), 400
     p = placeholder()
     conn = get_db()
     execute_write(conn, f'DELETE FROM users WHERE id = {p}', (user_id,))
     conn.commit(); conn.close()
-    log_action('Poisti käyttäjän', 'user', user_id)
-    return jsonify({'message': 'Käyttäjä poistettu'})
+    log_action('Poisti kÃ¤yttÃ¤jÃ¤n', 'user', user_id)
+    return jsonify({'message': 'KÃ¤yttÃ¤jÃ¤ poistettu'})
 
-# ── Stats ────────────────────────────────────────────────────────────────────
+# ââ Stats ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/stats')
 @login_required
 def stats():
     conn = get_db()
     total = execute_scalar(conn, 'SELECT COUNT(*) FROM properties WHERE arkistoitu = 0')
     vuokrattu = execute_scalar(conn,
-        "SELECT COUNT(*) FROM properties WHERE LOWER(vuokrattu) = 'kyllä' AND arkistoitu = 0")
+        "SELECT COUNT(*) FROM properties WHERE LOWER(vuokrattu) = 'kyllÃ¤' AND arkistoitu = 0")
     vapaat = (total or 0) - (vuokrattu or 0)
     vuokramarkkinalla = execute_scalar(conn,
-        "SELECT COUNT(*) FROM properties WHERE LOWER(vuokramarkkinalla) = 'kyllä' AND arkistoitu = 0")
+        "SELECT COUNT(*) FROM properties WHERE LOWER(vuokramarkkinalla) = 'kyllÃ¤' AND arkistoitu = 0")
     vuokra_sum = execute_scalar(conn,
         "SELECT SUM(kokonaisumma) FROM properties WHERE kokonaisumma IS NOT NULL "
-        "AND LOWER(vuokrattu) = 'kyllä' AND LOWER(vuokratilitykset) = 'tilitys' "
+        "AND LOWER(vuokrattu) = 'kyllÃ¤' AND LOWER(vuokratilitykset) = 'tilitys' "
         "AND arkistoitu = 0") or 0
     huolenpidossa = execute_scalar(conn,
-        "SELECT COUNT(*) FROM properties WHERE LOWER(huolenpidossa) = 'kyllä' AND arkistoitu = 0")
+        "SELECT COUNT(*) FROM properties WHERE LOWER(huolenpidossa) = 'kyllÃ¤' AND arkistoitu = 0")
     per_vastuuhenkilo = execute_query(conn,
         "SELECT vastuuhenkilo, COUNT(*) as total, "
-        "SUM(CASE WHEN LOWER(vuokrattu) = 'kyllä' THEN 1 ELSE 0 END) as vuokrattu "
+        "SUM(CASE WHEN LOWER(vuokrattu) = 'kyllÃ¤' THEN 1 ELSE 0 END) as vuokrattu "
         "FROM properties WHERE vastuuhenkilo IS NOT NULL AND vastuuhenkilo != '' AND arkistoitu = 0 "
         "GROUP BY vastuuhenkilo ORDER BY total DESC")
     per_tila = execute_query(conn,
@@ -436,7 +436,7 @@ def stats():
         'per_tila': per_tila,
     })
 
-# ── Properties ───────────────────────────────────────────────────────────────
+# ââ Properties âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/properties', methods=['GET'])
 @login_required
 def get_properties():
@@ -500,7 +500,7 @@ def create_property():
     conn = get_db()
     new_id = execute_write(conn, sql, values)
     conn.commit(); conn.close()
-    log_action('Lisäsi kohteen', 'property', new_id, data.get('kohde_osoite'))
+    log_action('LisÃ¤si kohteen', 'property', new_id, data.get('kohde_osoite'))
     return jsonify({'id': new_id, 'message': 'Luotu onnistuneesti'}), 201
 
 @app.route('/api/properties/<int:prop_id>', methods=['PUT'])
@@ -520,7 +520,7 @@ def update_property(prop_id):
     execute_write(conn, sql, values)
     conn.commit(); conn.close()
     log_action('Muokkasi kohdetta', 'property', prop_id, data.get('kohde_osoite'))
-    return jsonify({'message': 'Päivitetty onnistuneesti'})
+    return jsonify({'message': 'PÃ¤ivitetty onnistuneesti'})
 
 @app.route('/api/properties/<int:prop_id>/archive', methods=['PUT'])
 @login_required
@@ -561,8 +561,8 @@ def delete_property(prop_id):
         _addr = (execute_one(conn, f'SELECT kohde_osoite FROM properties WHERE id = {p}', (prop_id,)) or {}).get('kohde_osoite')
         execute_write(conn, f'DELETE FROM properties WHERE id = {p}', (prop_id,))
         conn.commit(); conn.close()
-        log_action('Poisti kohteen pysyvästi', 'property', prop_id, _addr)
-        return jsonify({'message': 'Poistettu pysyvästi'})
+        log_action('Poisti kohteen pysyvÃ¤sti', 'property', prop_id, _addr)
+        return jsonify({'message': 'Poistettu pysyvÃ¤sti'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -581,7 +581,7 @@ def safe_num(val):
     s = str(val).strip()
     if not s or s.startswith('='): return None   # skip Excel formulas
     # Replace Finnish comma decimal, strip currency symbols and extra text
-    s = s.replace(',', '.').replace('€', '').replace(' ', '')
+    s = s.replace(',', '.').replace('â¬', '').replace(' ', '')
     # Take only the leading numeric part
     import re
     m = re.match(r'^-?[\d]+(?:\.[\d]+)?', s)
@@ -591,12 +591,12 @@ def safe_num(val):
 @admin_required
 def import_excel():
     if 'file' not in request.files:
-        return jsonify({'error': 'Tiedostoa ei löydy'}), 400
+        return jsonify({'error': 'Tiedostoa ei lÃ¶ydy'}), 400
     file = request.files['file']
     try:
         df = pd.read_excel(io.BytesIO(file.read()))
     except Exception as e:
-        return jsonify({'error': f'Tiedoston luku epäonnistui: {str(e)}'}), 400
+        return jsonify({'error': f'Tiedoston luku epÃ¤onnistui: {str(e)}'}), 400
 
     count = 0; errors = []
 
@@ -659,7 +659,7 @@ def get_filters():
     conn.close()
     return jsonify({'kaupungit': kaupungit, 'vastuuhenkilot': vastuuhenkilot})
 
-# ── Excel Export ─────────────────────────────────────────────────────────────
+# ââ Excel Export âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/export')
 @login_required
 def export_excel():
@@ -684,11 +684,55 @@ def export_excel():
     else:
         rows = execute_query(conn, 'SELECT * FROM properties WHERE arkistoitu = 0 ORDER BY omistaja, kohde_osoite')
     conn.close()
-    # Map column names to Finnish
-    col_map = {v: k for k, v in EXCEL_TO_DB.items()}
+    # Explicit column order matching table view, with Finnish labels
+    COL_ORDER = [
+        'kohde_osoite','omistaja','tyyppi','koko','kaupunki','vastuuhenkilo',
+        'huolenpitosopimus','huolenpidossa','vuokrauksessa','vuokravalittaja',
+        'vuokrattu','vuokramarkkinalla','asunnon_tila','vuokralaisen_nimi',
+        'vuokralaisen_puhelin','vuokralaisen_sahkoposti','vuokrasopimus_alkaen',
+        'vuokrasopimus_paattyy','vuokra_alussa','vuokra_tanaan','vesimaksut',
+        'muut_maksut','saunamaksut','kokonaisumma','vuokravakuus','vakuuden_maksupv',
+        'kenen_tililla_vakuus','takuupalvelu','avaimet_luovutettu','avainten_lkm',
+        'avainten_luovutettu_lkm','vesimittari_luettu','valitys_laskutettu',
+        'valityshinta','valitys_laskutettu_pvm','vuokratilitykset','laskutusperuste',
+        'laskutuksen_status','vuokranantajan_kontakti','vuokranantajan_sahkoposti',
+        'vuokranantajan_puhelin','lisatietoja',
+    ]
+    COL_LABELS = {
+        'kohde_osoite': 'Kohde/Osoite', 'omistaja': 'Omistaja',
+        'tyyppi': 'Tyyppi', 'koko': 'Koko', 'kaupunki': 'Kaupunki',
+        'vastuuhenkilo': 'Vastuuhenkilö', 'huolenpitosopimus': 'Huolenpitosopimus',
+        'huolenpidossa': 'Huolenpidossa', 'vuokrauksessa': 'Vuokrauksessa',
+        'vuokravalittaja': 'Vuokravälittäjä', 'vuokrattu': 'Vuokrattu',
+        'vuokramarkkinalla': 'Vuokramarkkinalla', 'asunnon_tila': 'Asunnon tila',
+        'vuokralaisen_nimi': 'Vuokralaisen nimi',
+        'vuokralaisen_puhelin': 'Vuokralaisen puhelin',
+        'vuokralaisen_sahkoposti': 'Vuokralaisen sähköposti',
+        'vuokrasopimus_alkaen': 'Vuokrasopimus alkaen',
+        'vuokrasopimus_paattyy': 'Vuokrasopimus päättyy',
+        'vuokra_alussa': 'Vuokra alussa', 'vuokra_tanaan': 'Vuokra tänään',
+        'vesimaksut': 'Vesimaksut', 'muut_maksut': 'Muut maksut',
+        'saunamaksut': 'Saunamaksut', 'kokonaisumma': 'Kokonaissumma',
+        'vuokravakuus': 'Vuokravakuus', 'vakuuden_maksupv': 'Vakuuden maksupv.',
+        'kenen_tililla_vakuus': 'Kenen tilillä vakuus', 'takuupalvelu': 'Takuupalvelu',
+        'avaimet_luovutettu': 'Avaimet luovutettu', 'avainten_lkm': 'Avainten lkm',
+        'avainten_luovutettu_lkm': 'Avainten luovutettu lkm',
+        'vesimittari_luettu': 'Vesimittari luettu',
+        'valitys_laskutettu': 'Välitys laskutettu',
+        'valityshinta': 'Välityshinta sis. alv',
+        'valitys_laskutettu_pvm': 'Välitys laskutettu pvm',
+        'vuokratilitykset': 'Vuokratilitykset',
+        'laskutusperuste': 'Laskutusperuste sis. alv (€/kk)',
+        'laskutuksen_status': 'Huolenpidon laskutuksen status',
+        'vuokranantajan_kontakti': 'Vuokranantajan kontakti',
+        'vuokranantajan_sahkoposti': 'Vuokranantajan sähköposti',
+        'vuokranantajan_puhelin': 'Vuokranantajan puhelinnumero',
+        'lisatietoja': 'Lisätietoja',
+    }
     df = pd.DataFrame(rows)
-    df = df.drop(columns=[c for c in ['id','luotu','paivitetty','arkistoitu'] if c in df.columns], errors='ignore')
-    df.columns = [col_map.get(c, c) for c in df.columns]
+    existing_cols = [c for c in COL_ORDER if c in df.columns]
+    df = df[existing_cols]
+    df.columns = [COL_LABELS.get(c, c) for c in df.columns]
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Huolenpito CRM')
@@ -698,7 +742,7 @@ def export_excel():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         as_attachment=True, download_name=filename)
 
-# ── Tilitysraportti ──────────────────────────────────────────────────────────
+# ââ Tilitysraportti ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/tilitysraportti')
 @login_required
 def tilitysraportti():
@@ -708,17 +752,17 @@ def tilitysraportti():
 
     conn = get_db()
     rows = execute_query(conn,
-        "SELECT * FROM properties WHERE LOWER(vuokrattu) = 'kyllä' AND arkistoitu = 0 "
+        "SELECT * FROM properties WHERE LOWER(vuokrattu) = 'kyllÃ¤' AND arkistoitu = 0 "
         "ORDER BY omistaja, kohde_osoite")
     conn.close()
 
     wb = Workbook()
     wb.remove(wb.active)
 
-    # ── Kuukausisheet ──
+    # ââ Kuukausisheet ââ
     ws = wb.create_sheet(f'{kuukausi_nimi} {vuosi}')
     headers = ['Osoite','Omistaja','Vuokralainen','Vuokra','Vesimaksu',
-               'Muut maksut','Huolenpitomaksut','Muut huomiot','Yhteensä/Tilitettävä summa']
+               'Muut maksut','Huolenpitomaksut','Muut huomiot','YhteensÃ¤/TilitettÃ¤vÃ¤ summa']
     hdr_fill = PatternFill('solid', fgColor='1F4E79')
     hdr_font = Font(bold=True, color='FFFFFF')
     for i, h in enumerate(headers, 1):
@@ -800,7 +844,7 @@ def tilitysraportti():
         as_attachment=True, download_name=filename)
 
 
-# ── Audit log API ─────────────────────────────────────────────────────────────
+# ââ Audit log API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 @app.route('/api/logi')
 @admin_required
 def get_logi():
@@ -822,7 +866,7 @@ def uusi_vuokralainen(prop_id):
     prop = execute_one(conn, f'SELECT * FROM properties WHERE id = {p}', (prop_id,))
     if not prop:
         conn.close()
-        return jsonify({'error': 'Kohde ei löydy'}), 404
+        return jsonify({'error': 'Kohde ei lÃ¶ydy'}), 404
     tenant_fields = [
         'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti',
         'vuokra_alussa','vuokra_tanaan','vesimaksut','muut_maksut','saunamaksut',
