@@ -1299,11 +1299,22 @@ async function addNewTenant() {
     const res = await fetch('/api/properties/' + propId + '/uusi-vuokralainen', { method: 'POST' });
     if (!res.ok) throw new Error('Virhe: ' + res.status);
     const updated = await res.json();
-    // Update allProperties cache
+    // Päivitä allProperties-välimuisti
     const idx = allProperties.findIndex(x => x.id === updated.id);
     if (idx !== -1) allProperties[idx] = updated;
-    // Re-open modal with cleared data
-    openEditModal(updated.id);
+    // Tyhjennä vuokralaiskenttät suoraan ilman modaalin sulkemista
+    const tenantFields = [
+      'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti',
+      'vuokra_alussa','vuokra_tanaan','vesimaksut','muut_maksut','saunamaksut',
+      'kokonaisumma','vuokravakuus','vakuuden_maksupv','kenen_tililla_vakuus',
+      'avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm'
+    ];
+    tenantFields.forEach(function(f) {
+      const el = document.getElementById('f-' + f);
+      if (el) el.value = '';
+    });
+    // Näytä päivitetty historia
+    renderTenantHistory(updated);
   } catch(e) {
     alert('Virhe vuokralaistietojen arkistoinnissa: ' + e.message);
   }
