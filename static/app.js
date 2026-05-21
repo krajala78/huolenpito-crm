@@ -267,89 +267,89 @@ function renderTable(props) {
     // 1. Kohde / Osoite — sticky left
     + '<td ' + stickyTd + '>'
     +   '<div class="fw-semibold">' + esc(p.kohde_osoite || '-') + '</div>'
-    +   (p.postinumero ? '<small class="text-muted">' + esc(p.postinumero) + '</small>' : '')
-    + '</td>'
-    // 2. Omistaja
+    // 3. Tyyppi
     + cell(p.omistaja)
+    // 3. Tyyppi
     + cell(p.vuokranantajan_kontakti)
-    // 40. Vuokranantajan sähköposti
+    // 3. Tyyppi
     + cell(p.vuokranantajan_sahkoposti)
-    // 41. Vuokranantajan puhelin
+    // 3. Tyyppi
     + cell(p.vuokranantajan_puhelin)
     // 3. Tyyppi
     + cell(p.tyyppi)
-    // 4. Koko
+    // 3. Tyyppi
     + '<td class="text-center">' + (p.koko != null ? p.koko + ' m²' : '-') + '</td>'
-    // 5. Kaupunki
+    // 3. Tyyppi
     + cell(p.kaupunki)
-    // 6. Vastuuhenkilö
-    + cell(p.vastuuhenkilo)
-    // 7. Huolenpitosopimus
+    // 3. Tyyppi
+    +   (p.postinumero ? '<small class="text-muted">' + esc(p.postinumero) + '</small>' : '')
+    // 3. Tyyppi
     + cell(p.huolenpitosopimus)
-    // 8. Huolenpidossa
+    // 3. Tyyppi
     + cellC(p.huolenpidossa)
-    // 9. Vuokrauksessa
+    // 3. Tyyppi
     + cellC(p.vuokrauksessa)
-    // 10. Vuokravälittäjä
+    // 3. Tyyppi
     + cell(p.vuokravalittaja)
-    // 11. Vuokrattu
-    + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
-    // 12. Vuokramarkkinalla
-    + cellC(p.vuokramarkkinalla)
-    // 13. Asunnon tila
-    + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
-    // 14. Vuokralainen
-    + cell(p.vuokralaisen_nimi)
-    // 15. Vuokralaisen puhelin
-    + cell(p.vuokralaisen_puhelin)
-    // 16. Vuokralaisen sähköposti
-    + cell(p.vuokralaisen_sahkoposti)
-    // 17. Vuokrasopimus alkaen
-    + cell(p.vuokrasopimus_alkaen)
-    // 18. Vuokrasopimus päättyy
-    + cell(p.vuokrasopimus_paattyy)
-    // 19. Vuokra alussa
-    + cellEur(p.vuokra_alussa)
-    // 20. Vuokra tänään
-    + cellEur(p.vuokra_tanaan)
-    // 21. Vesimaksut
-    + cellEur(p.vesimaksut)
-    // 22. Muut maksut
-    + cell(p.muut_maksut)
-    // 23. Saunamaksut
-    + cell(p.saunamaksut)
-    // 24. Kokonaisumma
-    + '<td class="text-end fw-semibold">' + (p.kokonaisumma != null ? formatEur(p.kokonaisumma) : '-') + '</td>'
-    // 25. Vuokravakuus
-    + cellEur(p.vuokravakuus)
-    // 26. Vakuuden maksupv
-    + cell(p.vakuuden_maksupv)
-    // 27. Kenen tilillä vakuus
-    + cell(p.kenen_tililla_vakuus)
-    // 28. Avaimet luovutettu
-    + cell(p.avaimet_luovutettu)
-    // 29. Avainten lkm
-    + cellC(p.avainten_lkm)
-    // 30. Avainten luovutettu lkm
-    + cellC(p.avainten_luovutettu_lkm)
-    // 31. Vesimittari luettu
-    + cell(p.vesimittari_luettu)
-    // 32. Välitys laskutettu
-    + cell(p.valitys_laskutettu)
-    // 33. Välityshinta
-    + cellEur(p.valityshinta)
-    // 34. Välitys laskutettu pvm
-    + cell(p.valitys_laskutettu_pvm)
-    // 35. Takuupalvelu
-    + cell(p.takuupalvelu)
-    // 36. Vuokratilitykset
-    + cell(p.vuokratilitykset)
-    // 37. Laskutusperuste
+    // 3. Tyyppi
+    + cell(p.vastuuhenkilo)
+    // 3. Tyyppi
     + cell(p.laskutusperuste)
-    // 38. Laskutuksen status
+    // 3. Tyyppi
     + cell(p.laskutuksen_status)
-    // 39. Vuokranantajan kontakti
-    // 42. Lisätietoja
+    // 3. Tyyppi
+    + cell(p.vuokratilitykset)
+    // 3. Tyyppi
+    + cell(p.vuokrasopimus_alkaen)
+    // 3. Tyyppi
+    + cell(p.vuokrasopimus_paattyy)
+    // 3. Tyyppi
+    + '<td class="text-center">' + vuokrattuBadge(p.vuokrattu) + '</td>'
+    // 3. Tyyppi
+    + cellC(p.vuokramarkkinalla)
+    // 3. Tyyppi
+    + '<td>' + tilaBadge(p.asunnon_tila) + '</td>'
+    // 3. Tyyppi
+    + cell(p.vuokralaisen_nimi)
+    // 3. Tyyppi
+    + cell(p.vuokralaisen_puhelin)
+    // 3. Tyyppi
+    + cell(p.vuokralaisen_sahkoposti)
+    // 3. Tyyppi
+    + cellEur(p.vuokra_alussa)
+    // 3. Tyyppi
+    + cellEur(p.vuokra_tanaan)
+    // 3. Tyyppi
+    + cellEur(p.vesimaksut)
+    // 3. Tyyppi
+    + cell(p.muut_maksut)
+    // 3. Tyyppi
+    + cell(p.saunamaksut)
+    // 3. Tyyppi
+    + '<td class="text-end fw-semibold">' + (p.kokonaisumma != null ? formatEur(p.kokonaisumma) : '-') + '</td>'
+    // 3. Tyyppi
+    + cellEur(p.vuokravakuus)
+    // 3. Tyyppi
+    + cell(p.vakuuden_maksupv)
+    // 3. Tyyppi
+    + cell(p.kenen_tililla_vakuus)
+    // 3. Tyyppi
+    + cell(p.avaimet_luovutettu)
+    // 3. Tyyppi
+    + cellC(p.avainten_lkm)
+    // 3. Tyyppi
+    + cellC(p.avainten_luovutettu_lkm)
+    // 3. Tyyppi
+    + cell(p.vesimittari_luettu)
+    // 3. Tyyppi
+    + cell(p.valitys_laskutettu)
+    // 3. Tyyppi
+    + cellEur(p.valityshinta)
+    // 3. Tyyppi
+    + cell(p.valitys_laskutettu_pvm)
+    // 3. Tyyppi
+    + cell(p.takuupalvelu)
+    // 3. Tyyppi
     + '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + esc(p.lisatietoja || '') + '">' + esc(p.lisatietoja || '-') + '</td>'
     // 43. Toiminnot — sticky right
     + '<td class="text-center" ' + stickyAct + ' onclick="event.stopPropagation()">'
