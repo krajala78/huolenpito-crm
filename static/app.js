@@ -381,7 +381,7 @@ function renderCards(props) {
     var rent = p.kokonaisumma ? '<span class="fw-bold text-primary">' + formatEur(p.kokonaisumma) + '/kk</span>'
              : p.vuokra_tanaan ? '<span class="fw-bold text-primary">' + formatEur(p.vuokra_tanaan) + '/kk</span>' : '-';
     return '<div class="prop-card" onclick="viewProperty(' + p.id + ')">'
-      + '<div class="pc-addr">' + esc(p.kohde_osoite || '-(p.kaupunki || '') + (p.tyyppi ? ' &bull; ' + esc(p.tyyppi) : '') + (p.koko ? ' &bull; ' + p.koko + ' m²' : '') + '</div>'
+      + '<div class="pc-addr">' + esc(p.kohde_osoite || '-') + '<div class="pc-sub"> ' + esc(p.kaupunki || '') + (p.tyyppi ? ' &bull; ' + esc(p.tyyppi) : '') + (p.koko ? ' &bull; ' + p.koko + ' m²' : '') + '</div>'
       + '<div class="pc-row">'
       +   '<div>' + vuokraBadge + tila + '</div>'
       +   '<div>' + rent + '</div>'
