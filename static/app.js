@@ -282,7 +282,7 @@ function renderTable(props) {
     // 3. Tyyppi
     + cell(p.kaupunki)
     // 3. Tyyppi
-    +   (p.postinumero ? '<small class="text-muted">' + esc(p.postinumero) + '</small>' : '')
+    + cell(p.postinumero)
     // 3. Tyyppi
     + cell(p.huolenpitosopimus)
     // 3. Tyyppi
@@ -381,8 +381,7 @@ function renderCards(props) {
     var rent = p.kokonaisumma ? '<span class="fw-bold text-primary">' + formatEur(p.kokonaisumma) + '/kk</span>'
              : p.vuokra_tanaan ? '<span class="fw-bold text-primary">' + formatEur(p.vuokra_tanaan) + '/kk</span>' : '-';
     return '<div class="prop-card" onclick="viewProperty(' + p.id + ')">'
-      + '<div class="pc-addr">' + esc(p.kohde_osoite || '-') + '</div>'
-      + '<div class="pc-sub">' + esc(p.kaupunki || '') + (p.postinumero ? ' ' + esc(p.postinumero) : '') + (p.tyyppi ? ' &bull; ' + esc(p.tyyppi) : '') + (p.koko ? ' &bull; ' + p.koko + ' m²' : '') + '</div>'
+      + '<div class="pc-addr">' + esc(p.kohde_osoite || '-(p.kaupunki || '') + (p.tyyppi ? ' &bull; ' + esc(p.tyyppi) : '') + (p.koko ? ' &bull; ' + p.koko + ' m²' : '') + '</div>'
       + '<div class="pc-row">'
       +   '<div>' + vuokraBadge + tila + '</div>'
       +   '<div>' + rent + '</div>'
