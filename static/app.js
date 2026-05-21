@@ -679,8 +679,8 @@ function _rebuildColFilterSelects(baseProps) {
 
 function applyColFilter(input) {
   var col = input.getAttribute('data-col');
-  var val = input.value.trim().toLowerCase();
-  if (val) { colFilters[col] = val; } else { delete colFilters[col]; }
+  var val = input.value.trim();
+  if (val) { colFilters[col] = new Set([val]); } else { delete colFilters[col]; }
   filterProperties();
 }
 
