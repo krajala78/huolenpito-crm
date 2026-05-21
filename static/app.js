@@ -334,6 +334,8 @@ function renderTable(props) {
     // 3. Tyyppi
     + cell(p.kenen_tililla_vakuus)
     // 3. Tyyppi
+    + cell(p.takuupalvelu)
+    // 3. Tyyppi
     + cell(p.avaimet_luovutettu)
     // 3. Tyyppi
     + cellC(p.avainten_lkm)
@@ -347,8 +349,6 @@ function renderTable(props) {
     + cellEur(p.valityshinta)
     // 3. Tyyppi
     + cell(p.valitys_laskutettu_pvm)
-    // 3. Tyyppi
-    + cell(p.takuupalvelu)
     // 3. Tyyppi
     + '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + esc(p.lisatietoja || '') + '">' + esc(p.lisatietoja || '-') + '</td>'
     // 43. Toiminnot — sticky right
@@ -969,8 +969,9 @@ function viewProperty(id) {
     { title: 'Vakuus & avaimet', icon: 'bi-shield-lock', fields: [
       ['Vuokravakuus',p.vuokravakuus ? formatEur(p.vuokravakuus) : null],
       ['Vakuuden maksupv',p.vakuuden_maksupv],['Kenen tililla vakuus',p.kenen_tililla_vakuus],
+      ['Takuupalvelu',p.takuupalvelu],
       ['Avaimet luovutettu',p.avaimet_luovutettu],['Avainten lkm',p.avainten_lkm],
-      ['Avainten luovutettu lkm',p.avainten_luovutettu_lkm],['Takuupalvelu',p.takuupalvelu],
+      ['Avainten luovutettu lkm',p.avainten_luovutettu_lkm],
       ['Vesimittari luettu',p.vesimittari_luettu]]},
     { title: 'Valitystiedot', icon: 'bi-receipt', fields: [
       ['Valitys laskutettu',p.valitys_laskutettu],
@@ -1027,7 +1028,7 @@ function openEditModal(id) {
     'vuokrasopimus_alkaen','vuokrasopimus_paattyy','vuokrattu','vuokramarkkinalla','asunnon_tila',
     'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti','vuokra_alussa','vuokra_tanaan',
     'vesimaksut','muut_maksut','saunamaksut','kokonaisumma','vuokravakuus','vakuuden_maksupv',
-    'kenen_tililla_vakuus','avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm','takuupalvelu',
+    'kenen_tililla_vakuus','takuupalvelu','avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm',
     'vesimittari_luettu','valitys_laskutettu','valitys_laskutettu_pvm','valityshinta','lisatietoja',
   ];
   fields.forEach(f => {
@@ -1050,7 +1051,7 @@ async function saveProperty() {
     'vuokrasopimus_alkaen','vuokrasopimus_paattyy','vuokrattu','vuokramarkkinalla','asunnon_tila',
     'vuokralaisen_nimi','vuokralaisen_puhelin','vuokralaisen_sahkoposti','vuokra_alussa','vuokra_tanaan',
     'vesimaksut','muut_maksut','saunamaksut','kokonaisumma','vuokravakuus','vakuuden_maksupv',
-    'kenen_tililla_vakuus','avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm','takuupalvelu',
+    'kenen_tililla_vakuus','takuupalvelu','avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm',
     'vesimittari_luettu','valitys_laskutettu','valitys_laskutettu_pvm','valityshinta','lisatietoja',
   ];
   const data = {};
