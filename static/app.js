@@ -640,14 +640,11 @@ function _updateColFilterBtn(col) {
 
 function clearColFilters() {
   colFilters = {};
-  document.querySelectorAll('#col-filter-row .col-filter-btn[data-col]').forEach(function(btn) {
-    btn.textContent = 'Kaikki';
-    btn.classList.remove('btn-primary');
-    btn.classList.add('btn-outline-secondary');
+  document.querySelectorAll('#col-filter-row select[data-col]').forEach(function(sel) {
+    sel.value = '';
   });
   filterProperties();
 }
-
 function populateColFilterSelects(props) {
   _colFilterBaseProps = props;
   document.querySelectorAll('#col-filter-row select[data-col]').forEach(function(sel) {
@@ -678,6 +675,13 @@ function _rebuildColFilterSelects(baseProps) {
     var sv = document.getElementById('col-filter-search').value;
     _buildColMenuOptions(_activeColFilterCol, sv);
   }
+}
+
+function applyColFilter(input) {
+  var col = input.getAttribute('data-col');
+  var val = input.value.trim().toLowerCase();
+  if (val) { colFilters[col] = val; } else { delete colFilters[col]; }
+  filterProperties();
 }
 
 function applyColFiltersToList(props) {
