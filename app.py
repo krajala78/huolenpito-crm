@@ -828,6 +828,7 @@ def uusi_vuokralainen(prop_id):
         'vuokra_alussa','vuokra_tanaan','vesimaksut','muut_maksut','saunamaksut',
         'kokonaisumma','vuokravakuus','vakuuden_maksupv','kenen_tililla_vakuus',
         'avaimet_luovutettu','avainten_lkm','avainten_luovutettu_lkm',
+        'vuokrasopimus_alkaen','vuokrasopimus_paattyy',
     ]
     current = {f: prop.get(f) for f in tenant_fields}
     current['tallennettu'] = datetime.now().strftime('%Y-%m-%d')
