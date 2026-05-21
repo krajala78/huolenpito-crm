@@ -988,6 +988,7 @@ function openEditModal(id) {
     const el = document.getElementById('f-' + f); if (!el) return;
     const v = p[f]; el.value = (v !== null && v !== undefined) ? v : '';
   });
+  renderTenantHistory(p);
   new bootstrap.Modal(document.getElementById('propertyModal')).show();
 }
 
@@ -1245,4 +1246,62 @@ function showToast(msg, type) {
   toast.className = 'toast align-items-center text-white border-0 bg-' + type;
   body.textContent = msg;
   new bootstrap.Toast(toast, { delay: 3500 }).show();
+}
+
+
+// ── Vuokralaisen historia ──────────────────────────────────────────────────
+
+function renderTenantHistory(p) {
+  const container = document.getElementById('tenant-history-section');
+  if (!container) return;
+  let historia = [];
+  try { historia = JSON.parse(p.vuokralainen_historia || '[]'); } catch(e) {}
+  if (!historia.length) { container.innerHTML = ''; return; }
+
+  const sectionLabels = {
+    vuokralaisen_nimi: 'Nimi', vuokralaisen_puhelin: 'Puhelin',
+    vuokralaisen_sahkoposti: 'Sähköposti', vuokra_alussa: 'Vuokra alussa (€)',
+    vuokra_tanaan: 'Vuokra tänään (€)', vesimaksut: 'Vesimaksut (€)',
+    muut_maksut: 'Muut maksut (€)', saunamaksut: 'Saunamaksut (€)',
+    kokonaisumma: 'Kokonaissumma (€)', vuokravakuus: 'Vakuus (€)',
+    vakuuden_maksupv: 'Vakuuden maksupv', kenen_tililla_vakuus: 'Vakuus tilillä',
+    avaimet_luovutettu: 'Avaimet luovutettu', avainten_lkm: 'Avainten lkm',
+    avainten_luovutettu_lkm: 'Luovutettu lkm'
+  };
+
+  let html = '';
+  historia.forEach(function(tenant, idx) {
+    const date = tenant.tallennettu || '';
+    html += '<div class="col-12 mt-3">';
+    html += '<div class="card border-secondary">';
+    html += '<div class="card-header py-1 px-3 d-flex align-items-center gap-2">';
+    html += '<i class="bi bi-clock-history text-secondary"></i>';
+    html += '<span class="small fw-semibold text-secondary">Aiempi vuokralainen ' + (idx+1) + (date ? ' – tallennettu ' + date : '') + '</span>';
+    html += '</div><div class="card-body py-2 px-3">';
+    html += '<div class="row g-2">';
+    Object.entries(sectionLabels).forEach(function(entry) {
+      const key = entry[0]; const label = entry[1];
+      const val = tenant[key];
+      if (val !== null && val !== undefined && val !== '') {
+        html += '<div class="col-12 col-md-4"><span class="text-muted small">' + label + ':</span> <span class="small">' + val + '</span></div>';
+      }
+    });
+    html += '</div></div></div></div>';
+  });
+  container.innerHTML = html;
+}
+
+async function addNewTenant() {
+  const propId = document.getElementById('edit-id')?.value;
+  if (!propId) return;
+  if (!confirm('Arkistoidaanko nykyiset vuokralaistiedot ja tyhjennetään kentät uutta vuokralaista varten?')) return;
+  try {
+    const res = await fetch('/api/properties/' + propId + '/uusi-vuokralainen', { method: 'POST' });
+    if (!res.ok) throw new Error('Virhe: ' + res.status);
+    const updated = await res.json();
+    // Re-open modal with updated data
+    openEditModal(updated);
+  } catch(e) {
+    alert('Virhe vuokralaistietojen arkistoinnissa: ' + e.message);
+  }
 }
