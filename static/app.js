@@ -271,6 +271,11 @@ function renderTable(props) {
     + '</td>'
     // 2. Omistaja
     + cell(p.omistaja)
+    + cell(p.vuokranantajan_kontakti)
+    // 40. Vuokranantajan sähköposti
+    + cell(p.vuokranantajan_sahkoposti)
+    // 41. Vuokranantajan puhelin
+    + cell(p.vuokranantajan_puhelin)
     // 3. Tyyppi
     + cell(p.tyyppi)
     // 4. Koko
@@ -344,11 +349,6 @@ function renderTable(props) {
     // 38. Laskutuksen status
     + cell(p.laskutuksen_status)
     // 39. Vuokranantajan kontakti
-    + cell(p.vuokranantajan_kontakti)
-    // 40. Vuokranantajan sähköposti
-    + cell(p.vuokranantajan_sahkoposti)
-    // 41. Vuokranantajan puhelin
-    + cell(p.vuokranantajan_puhelin)
     // 42. Lisätietoja
     + '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + esc(p.lisatietoja || '') + '">' + esc(p.lisatietoja || '-') + '</td>'
     // 43. Toiminnot — sticky right
